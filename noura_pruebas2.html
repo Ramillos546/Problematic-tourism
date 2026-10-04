@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOURA - Motor Edge AI Dinámico</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #0A0B10; color: #fff; padding: 20px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 450px; background: #1A1C23; padding: 25px; border-radius: 16px; border: 1px solid #00E5FF; }
+        h1 { color: #00E5FF; font-size: 20px; text-align: center; margin-top: 0;}
+        .header-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;}
+        
+        .raw-data { background: #000; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 12px; color: #00E676; margin-bottom: 20px; min-height: 80px; max-height: 120px; overflow-y: auto; }
+        
+        .btn-process { width: 100%; padding: 14px; background: linear-gradient(90deg, #6200EA, #00C9FF); color: #fff; border: none; font-weight: bold; border-radius: 8px; cursor: pointer; margin-bottom: 20px; }
+        .btn-reload { background: transparent; color: #B388FF; border: 1px solid #B388FF; padding: 5px 10px; border-radius: 6px; cursor: pointer; font-size: 11px;}
+        
+        .terminal { background: #13141A; border-left: 3px solid #B388FF; padding: 15px; font-family: monospace; font-size: 13px; color: #ccc; display: none; margin-bottom: 20px;}
+        .highlight { color: #00C9FF; font-weight: bold; }
+        
+        .dashboard { display: none; background: #232530; padding: 15px; border-radius: 12px; border-top: 4px solid #00E5FF; }
+        .card-title { font-size: 13px; color: #888; font-weight: bold; margin-bottom: 10px; margin-top: 10px;}
+        .stat { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 5px; }
+        .btn-human { width: 100%; padding: 10px; margin-top: 15px; background: transparent; color: #00E5FF; border: 1px dashed #00E5FF; border-radius: 8px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-controls">
+        <h1 id="weekTitle">NOURA - Semana 42</h1>
+        <button class="btn-reload" onclick="cargarEscenarioAleatorio()">🔄 Siguiente Semana</button>
+    </div>
+    
+    <div style="font-size: 13px; color: #888; margin-bottom: 5px;">Paquetes 2G/3G sincronizados:</div>
+    <div class="raw-data" id="rawDataBox"></div>
+
+    <button class="btn-process" id="btnProcess" onclick="iniciarProcesamiento()">Activar Small AI (Análisis Local)</button>
+
+    <div class="terminal" id="terminalBox"></div>
+
+    <div class="dashboard" id="dashboardBox">
+        <h3 style="color:#00E5FF; margin:0 0 10px 0; font-size: 16px;">📊 Reporte de Instinto</h3>
+        
+        <div class="card-title">ACIERTOS DETECTADOS</div>
+        <div class="stat"><span id="goodText"></span> <span id="goodCount" style="color:#00E676; font-weight:bold;"></span></div>
+        
+        <div class="card-title" style="color:#FF3D00; margin-top: 15px;">FRICCIONES DETECTADAS</div>
+        <div class="stat"><span id="badText"></span> <span id="badCount" style="color:#FF3D00; font-weight:bold;"></span></div>
+
+        <button class="btn-human" id="btnSugerencias" onclick="mostrarSugerencias()"></button>
+        
+        <div id="sugerenciasBox" style="display:none; margin-top:15px; font-size:13px; color:#B388FF; line-height: 1.5;"></div>
+    </div>
+</div>
+
+<script>
+    const escenarios = [
+        {
+            semana: 42,
+            raw: '[10:02 AM] SMS (EN): "Food was great, but the final hike was too tiring."<br>[11:15 AM] SMS (FR): "J\'ai adoré le guide. Il fait trop chaud à la fin."<br>[03:20 PM] SMS (ES): "Rica comida, la caminata final es muy pesada."',
+            good: 'Gastronomía tradicional', goodC: '3 menciones',
+            bad: 'Cansancio/Calor al final', badC: '4 menciones',
+            pregunta: '¿Generar ideas para "Cansancio al final"?',
+            sugerencias: '💡 <strong>Idea 1:</strong> Ofrecer "Kits de hidratación" extra antes de subir.<br>💡 <strong>Idea 2:</strong> Crear una parada de descanso sombreada a los 2km.'
+        },
+        {
+            semana: 43,
+            raw: '[09:10 AM] SMS (DE): "Tolle Tour, aber ich konnte den Guide nicht verstehen."<br>[12:05 PM] SMS (EN): "Beautiful views! Wish there was an English translation."<br>[02:30 PM] SMS (ES): "Me encantó el paisaje y las fotos."',
+            good: 'Vistas y recorrido visual', goodC: '5 menciones',
+            bad: 'Barrera de idioma con el guía', badC: '3 menciones',
+            pregunta: '¿Generar ideas para "Barrera de idioma"?',
+            sugerencias: '💡 <strong>Idea 1:</strong> Imprimir panfletos con códigos QR que lleven a la historia del lugar traducida.<br>💡 <strong>Idea 2:</strong> Grabar un audio-guía básico en inglés para reproducir en las paradas clave.'
+        },
+        {
+            semana: 44,
+            raw: '[11:00 AM] SMS (EN): "Loved the crafts, but you don\'t take credit cards."<br>[01:20 PM] SMS (FR): "Superbes produits locaux. Dommage, pas de paiement digital."<br>[04:15 PM] SMS (ES): "Todo increíble, pero tuve que buscar un cajero lejos."',
+            good: 'Calidad de artesanías locales', goodC: '6 menciones',
+            bad: 'Falta de pagos digitales/tarjeta', badC: '4 menciones',
+            pregunta: '¿Generar ideas para "Falta de pagos digitales"?',
+            sugerencias: '💡 <strong>Idea 1:</strong> Implementar un enlace de pago offline que puedan pagar al volver al hotel.<br>💡 <strong>Idea 2:</strong> Ofrecer los productos como "pre-venta" online junto con la reserva del tour.'
+        }
+    ];
+
+    let escenarioActual = 0;
+
+    function cargarEscenarioAleatorio() {
+        // Reiniciar UI
+        document.getElementById('btnProcess').style.display = 'block';
+        document.getElementById('terminalBox').style.display = 'none';
+        document.getElementById('dashboardBox').style.display = 'none';
+        document.getElementById('btnSugerencias').style.display = 'block';
+        document.getElementById('sugerenciasBox').style.display = 'none';
+
+        // Cambiar escenario (cicla entre 0, 1 y 2)
+        escenarioActual = (escenarioActual + 1) % escenarios.length;
+        const data = escenarios[escenarioActual];
+
+        // Llenar datos
+        document.getElementById('weekTitle').innerText = "NOURA - Semana " + data.semana;
+        document.getElementById('rawDataBox').innerHTML = data.raw;
+        document.getElementById('goodText').innerText = data.good;
+        document.getElementById('goodCount').innerText = data.goodC;
+        document.getElementById('badText').innerText = data.bad;
+        document.getElementById('badCount').innerText = data.badC;
+        document.getElementById('btnSugerencias').innerText = data.pregunta;
+        document.getElementById('sugerenciasBox').innerHTML = data.sugerencias;
+    }
+
+    async function iniciarProcesamiento() {
+        document.getElementById('btnProcess').style.display = 'none';
+        const terminal = document.getElementById('terminalBox');
+        terminal.style.display = 'block';
+
+        // Simulación de Small AI
+        terminal.innerHTML = "Iniciando Small AI...<br>";
+        await sleep(800);
+        terminal.innerHTML += "> <span class='highlight'>Traduciendo</span> idiomas detectados a ES...<br>";
+        await sleep(1000);
+        terminal.innerHTML += "> Procesando <span class='highlight'>Clasificación de Intenciones</span>...<br>";
+        await sleep(800);
+        terminal.innerHTML += "> <span style='color:#00E676;'>Análisis completado. Generando UI...</span>";
+        await sleep(600);
+
+        terminal.style.display = 'none';
+        document.getElementById('dashboardBox').style.display = 'block';
+    }
+
+    function mostrarSugerencias() {
+        document.getElementById('btnSugerencias').style.display = 'none';
+        document.getElementById('sugerenciasBox').style.display = 'block';
+    }
+
+    function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+
+    // Cargar el primero al iniciar
+    window.onload = () => { escenarioActual = -1; cargarEscenarioAleatorio(); };
+</script>
+
+</body>
+</html>
