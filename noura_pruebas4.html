@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOURA - Motor Edge AI Dinámico</title>
+    <style>
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: #F9F8F6; color: #2C3539; padding: 20px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 480px; background: #FFFFFF; padding: 30px; border-radius: 16px; border: 1px solid #E5E4E0; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        
+        h1 { color: #2C3539; font-size: 24px; text-align: center; margin-top: 0; font-weight: 800; letter-spacing: 1px;}
+        .header-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #E5E4E0; padding-bottom: 15px;}
+        
+        .raw-data { background: #F5F4F0; padding: 15px; border-radius: 10px; font-family: 'Courier New', monospace; font-size: 11px; color: #555; margin-bottom: 24px; min-height: 200px; max-height: 300px; overflow-y: auto; line-height: 1.6; border: 1px solid #E5E4E0;}
+        .translated-text { color: #D9795C; display: block; margin-bottom: 8px; font-weight: bold; font-family: 'Segoe UI', sans-serif; font-size: 12px; margin-left: 10px;}
+        
+        .btn-process { width: 100%; padding: 16px; background: linear-gradient(135deg, #2C3539, #3A454A); color: #FFFFFF; border: none; font-weight: 700; font-size: 15px; border-radius: 10px; cursor: pointer; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(44, 53, 57, 0.2); transition: all 0.3s ease; }
+        .btn-process:hover { background: linear-gradient(135deg, #1A2124, #2C3539); transform: translateY(-2px); }
+        
+        .btn-reload { background: #FFFFFF; color: #D9795C; border: 1px solid #E5E4E0; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: 700; transition: all 0.2s ease; }
+        .btn-reload:hover { border-color: #D9795C; background: #FFF9F8; transform: translateY(-1px); }
+        
+        .btn-human { width: 100%; padding: 14px; margin-top: 20px; background: #FFFFFF; color: #D9795C; border: 2px solid #D9795C; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.3s ease; }
+        .btn-human:hover { background: #D9795C; color: #FFFFFF; transform: translateY(-2px); }
+        
+        .terminal { background: #F9F8F6; border-left: 4px solid #D9795C; padding: 15px; font-family: monospace; font-size: 13px; color: #2C3539; display: none; margin-bottom: 20px; border-radius: 0 8px 8px 0;}
+        .highlight { color: #D9795C; font-weight: bold; }
+        
+        .dashboard { display: none; background: #FFFFFF; padding: 0; margin-top: 10px;}
+        .report-header { background: #F9F8F6; padding: 15px; border-radius: 10px; text-align: center; margin-bottom: 20px; border: 1px solid #E5E4E0;}
+        .report-header h3 { margin: 0; color: #2C3539; font-size: 16px; font-weight: 800;}
+        
+        .card-title { font-size: 12px; color: #888; font-weight: bold; margin-bottom: 12px; margin-top: 15px; text-transform: uppercase; letter-spacing: 1px;}
+        .stat { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #F0F0F0; font-weight: 600;}
+        .stat:last-child { border-bottom: none; }
+        
+        .sugerencias-box { background: #FFF9F8; border-left: 4px solid #D9795C; padding: 18px; border-radius: 0 8px 8px 0; margin-top: 20px; font-size: 13px; color: #2C3539; line-height: 1.6;}
+        
+        .tag-good { color: #2E7D32; font-weight: bold; }
+        .tag-bad { color: #C62828; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-controls">
+        <h1 id="weekTitle">NOURA</h1>
+        <button class="btn-reload" onclick="cargarEscenarioAleatorio()">Siguiente Semana ↻</button>
+    </div>
+    
+    <div style="font-size: 13px; color: #888; margin-bottom: 8px; font-weight: 600;">Paquetes offline estructurados:</div>
+    <div class="raw-data" id="rawDataBox"></div>
+
+    <button class="btn-process" id="btnProcess" onclick="iniciarProcesamiento()">Activar Análisis Small AI</button>
+
+    <div class="terminal" id="terminalBox"></div>
+
+    <div class="dashboard" id="dashboardBox">
+        <div class="report-header">
+            <h3>Reporte de Instinto</h3>
+        </div>
+        
+        <div class="card-title">Aciertos Detectados</div>
+        <div class="stat"><span id="goodText"></span> <span id="goodCount" style="color:#2E7D32;"></span></div>
+        
+        <div class="card-title" style="margin-top: 20px;">Fricciones Detectadas</div>
+        <div class="stat"><span id="badText"></span> <span id="badCount" style="color:#C62828;"></span></div>
+
+        <button class="btn-human" id="btnSugerencias" onclick="mostrarSugerencias()"></button>
+        
+        <div id="sugerenciasBox" class="sugerencias-box" style="display:none;"></div>
+    </div>
+</div>
+
+<script>
+    const escenarios = [
+        {
+            semana: 42,
+            raw: '<b>[10:02] Turista 1 (EN)</b><br><span class="tag-good">BIEN:</span> "The traditional food was amazing."<br><span class="tag-bad">MAL:</span> "The final hike is too tiring."<br><br><b>[11:15] Turista 2 (FR)</b><br><span class="tag-good">BIEN:</span> "J\'ai adoré la nourriture."<br><span class="tag-bad">MAL:</span> "Trop chaud à la fin."<br><br><b>[13:20] Turista 3 (ES)</b><br><span class="tag-good">BIEN:</span> "Rica comida, muy sabrosa."<br><span class="tag-bad">MAL:</span> "La caminata final es pesada."<br><br><b>[15:45] Turista 4 (EN)</b><br><span class="tag-good">BIEN:</span> "Amazing food!"<br><br><b>[16:30] Turista 5 (DE)</b><br><span class="tag-good">BIEN:</span> "Sehr gutes Essen."<br>',
+            rawTranslated: '<b>[10:02] Turista 1 (EN)</b><br><span class="tag-good">BIEN:</span> "The traditional food was amazing."<br><span class="translated-text">↳ [ES]: "La comida tradicional estuvo increíble."</span><span class="tag-bad">MAL:</span> "The final hike is too tiring."<br><span class="translated-text">↳ [ES]: "La caminata final es muy cansada."</span><br><b>[11:15] Turista 2 (FR)</b><br><span class="tag-good">BIEN:</span> "J\'ai adoré la nourriture."<br><span class="translated-text">↳ [ES]: "Me encantó la comida."</span><span class="tag-bad">MAL:</span> "Trop chaud à la fin."<br><span class="translated-text">↳ [ES]: "Demasiado calor al final."</span><br><b>[13:20] Turista 3 (ES)</b><br><span class="tag-good">BIEN:</span> "Rica comida, muy sabrosa."<br><span class="translated-text">↳ [ES]: "Rica comida, muy sabrosa."</span><span class="tag-bad">MAL:</span> "La caminata final es pesada."<br><span class="translated-text">↳ [ES]: "La caminata final es pesada."</span><br><b>[15:45] Turista 4 (EN)</b><br><span class="tag-good">BIEN:</span> "Amazing food!"<br><span class="translated-text">↳ [ES]: "¡Comida increíble!"</span><br><b>[16:30] Turista 5 (DE)</b><br><span class="tag-good">BIEN:</span> "Sehr gutes Essen."<br><span class="translated-text">↳ [ES]: "Comida muy buena."</span><br>',
+            good: 'Gastronomía tradicional', goodC: '5 menciones',
+            bad: 'Cansancio/Calor al final', badC: '3 menciones',
+            pregunta: '¿Generar ideas para "Cansancio al final"?',
+            sugerencias: '<strong>Oportunidades de Innovación:</strong><br><br>• Ofrecer "Kits de hidratación" extra antes de iniciar el ascenso.<br>• Crear una pequeña parada de descanso sombreada a los 2km.'
+        },
+        {
+            semana: 43,
+            raw: '<b>[09:10] Turista 1 (DE)</b><br><span class="tag-good">BIEN:</span> "Tolle Aussicht."<br><span class="tag-bad">MAL:</span> "Ich konnte den Guide nicht verstehen."<br><br><b>[12:05] Turista 2 (EN)</b><br><span class="tag-good">BIEN:</span> "Beautiful views!"<br><span class="tag-bad">MAL:</span> "Wish there was an English translation."<br><br><b>[14:30] Turista 3 (ES)</b><br><span class="tag-good">BIEN:</span> "Me encantó el paisaje."<br><span class="tag-bad">MAL:</span> "El guía solo habla español local."<br><br><b>[16:15] Turista 4 (FR)</b><br><span class="tag-good">BIEN:</span> "Belles vues."<br><span class="tag-bad">MAL:</span> "Le guide ne parle pas français."<br><br><b>[17:00] Turista 5 (EN)</b><br><span class="tag-bad">MAL:</span> "Couldn\'t understand the history tour."<br>',
+            rawTranslated: '<b>[09:10] Turista 1 (DE)</b><br><span class="tag-good">BIEN:</span> "Tolle Aussicht."<br><span class="translated-text">↳ [ES]: "Grandes vistas."</span><span class="tag-bad">MAL:</span> "Ich konnte den Guide nicht verstehen."<br><span class="translated-text">↳ [ES]: "No pude entender al guía."</span><br><b>[12:05] Turista 2 (EN)</b><br><span class="tag-good">BIEN:</span> "Beautiful views!"<br><span class="translated-text">↳ [ES]: "¡Hermosas vistas!"</span><span class="tag-bad">MAL:</span> "Wish there was an English translation."<br><span class="translated-text">↳ [ES]: "Ojalá hubiera una traducción al inglés."</span><br><b>[14:30] Turista 3 (ES)</b><br><span class="tag-good">BIEN:</span> "Me encantó el paisaje."<br><span class="translated-text">↳ [ES]: "Me encantó el paisaje."</span><span class="tag-bad">MAL:</span> "El guía solo habla español local."<br><span class="translated-text">↳ [ES]: "El guía solo habla español local."</span><br><b>[16:15] Turista 4 (FR)</b><br><span class="tag-good">BIEN:</span> "Belles vues."<br><span class="translated-text">↳ [ES]: "Hermosas vistas."</span><span class="tag-bad">MAL:</span> "Le guide ne parle pas français."<br><span class="translated-text">↳ [ES]: "El guía no habla francés."</span><br><b>[17:00] Turista 5 (EN)</b><br><span class="tag-bad">MAL:</span> "Couldn\'t understand the history tour."<br><span class="translated-text">↳ [ES]: "No pude entender el tour histórico."</span><br>',
+            good: 'Paisajes y Vistas', goodC: '4 menciones',
+            bad: 'Barrera de idioma con el guía', badC: '5 menciones',
+            pregunta: '¿Generar ideas para "Barrera de idioma"?',
+            sugerencias: '<strong>Oportunidades de Innovación:</strong><br><br>• Imprimir folletos con códigos QR que lleven a la historia del lugar traducida.<br>• Grabar un audio-guía básico en inglés para reproducir en paradas clave.'
+        },
+        {
+            semana: 44,
+            raw: '<b>[11:00] Turista 1 (EN)</b><br><span class="tag-good">BIEN:</span> "Loved the crafts."<br><span class="tag-bad">MAL:</span> "You don\'t take cards."<br><br><b>[13:20] Turista 2 (FR)</b><br><span class="tag-good">BIEN:</span> "Superbes produits locaux."<br><span class="tag-bad">MAL:</span> "Pas de paiement digital."<br><br><b>[15:15] Turista 3 (ES)</b><br><span class="tag-good">BIEN:</span> "Buenas artesanías."<br><br><b>[17:05] Turista 4 (EN)</b><br><span class="tag-good">BIEN:</span> "Great artisan work."<br><br><b>[18:10] Turista 5 (DE)</b><br><span class="tag-good">BIEN:</span> "Schöne handgemachte Dinge."<br><br><b>[19:00] Turista 6 (ES)</b><br><span class="tag-good">BIEN:</span> "Artesanías muy bonitas."<br>',
+            rawTranslated: '<b>[11:00] Turista 1 (EN)</b><br><span class="tag-good">BIEN:</span> "Loved the crafts."<br><span class="translated-text">↳ [ES]: "Me encantaron las artesanías."</span><span class="tag-bad">MAL:</span> "You don\'t take cards."<br><span class="translated-text">↳ [ES]: "No aceptan tarjetas."</span><br><b>[13:20] Turista 2 (FR)</b><br><span class="tag-good">BIEN:</span> "Superbes produits locaux."<br><span class="translated-text">↳ [ES]: "Excelentes productos locales."</span><span class="tag-bad">MAL:</span> "Pas de paiement digital."<br><span class="translated-text">↳ [ES]: "No hay pago digital."</span><br><b>[15:15] Turista 3 (ES)</b><br><span class="tag-good">BIEN:</span> "Buenas artesanías."<br><span class="translated-text">↳ [ES]: "Buenas artesanías."</span><br><b>[17:05] Turista 4 (EN)</b><br><span class="tag-good">BIEN:</span> "Great artisan work."<br><span class="translated-text">↳ [ES]: "Gran trabajo artesanal."</span><br><b>[18:10] Turista 5 (DE)</b><br><span class="tag-good">BIEN:</span> "Schöne handgemachte Dinge."<br><span class="translated-text">↳ [ES]: "Cosas hechas a mano hermosas."</span><br><b>[19:00] Turista 6 (ES)</b><br><span class="tag-good">BIEN:</span> "Artesanías muy bonitas."<br><span class="translated-text">↳ [ES]: "Artesanías muy bonitas."</span><br>',
+            good: 'Calidad de artesanías locales', goodC: '6 menciones',
+            bad: 'Falta de pagos digitales', badC: '2 menciones',
+            pregunta: '¿Generar ideas para "Falta de pagos digitales"?',
+            sugerencias: '<strong>Oportunidades de Innovación:</strong><br><br>• Implementar un enlace de pago offline que puedan abonar al volver a su hotel.<br>• Ofrecer productos en "pre-venta" online al momento de reservar el tour.'
+        }
+    ];
+
+    let escenarioActual = 0;
+
+    function cargarEscenarioAleatorio() {
+        document.getElementById('btnProcess').style.display = 'block';
+        document.getElementById('terminalBox').style.display = 'none';
+        document.getElementById('dashboardBox').style.display = 'none';
+        document.getElementById('btnSugerencias').style.display = 'block';
+        document.getElementById('sugerenciasBox').style.display = 'none';
+
+        escenarioActual = (escenarioActual + 1) % escenarios.length;
+        const data = escenarios[escenarioActual];
+
+        document.getElementById('weekTitle').innerText = "NOURA - Sem. " + data.semana;
+        document.getElementById('rawDataBox').innerHTML = data.raw; 
+        document.getElementById('goodText').innerText = data.good;
+        document.getElementById('goodCount').innerText = data.goodC;
+        document.getElementById('badText').innerText = data.bad;
+        document.getElementById('badCount').innerText = data.badC;
+        document.getElementById('btnSugerencias').innerText = data.pregunta;
+        document.getElementById('sugerenciasBox').innerHTML = data.sugerencias;
+    }
+
+    async function iniciarProcesamiento() {
+        document.getElementById('btnProcess').style.display = 'none';
+        const terminal = document.getElementById('terminalBox');
+        terminal.style.display = 'block';
+
+        terminal.innerHTML = "Iniciando análisis local...<br>";
+        await sleep(800);
+        terminal.innerHTML += "> <span class='highlight'>Traduciendo</span> campos estructurados a Español...<br>";
+        
+        await sleep(600);
+        document.getElementById('rawDataBox').innerHTML = escenarios[escenarioActual].rawTranslated;
+
+        await sleep(1000);
+        terminal.innerHTML += "> Estructurando <span class='highlight'>Patrones de Retroalimentación</span>...<br>";
+        await sleep(800);
+        terminal.innerHTML += "> <span style='color:#2E7D32;'>Diagnóstico completado.</span>";
+        await sleep(600);
+
+        terminal.style.display = 'none';
+        document.getElementById('dashboardBox').style.display = 'block';
+    }
+
+    function mostrarSugerencias() {
+        document.getElementById('btnSugerencias').style.display = 'none';
+        document.getElementById('sugerenciasBox').style.display = 'block';
+    }
+
+    function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+
+    window.onload = () => { escenarioActual = -1; cargarEscenarioAleatorio(); };
+</script>
+
+</body>
+</html>

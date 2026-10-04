@@ -5,99 +5,111 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NOURA - Offline Utility</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #0A0B10; color: #ffffff; padding: 20px; }
-        .container { max-width: 400px; margin: auto; background: #1A1C23; padding: 25px; border-radius: 16px; border: 1px solid #00E5FF; box-shadow: 0px 4px 15px rgba(0, 229, 255, 0.2); }
-        h1 { color: #00E5FF; text-align: center; font-size: 24px; letter-spacing: 2px; }
-        .tagline { color: #B388FF; text-align: center; font-size: 10px; margin-top: -15px; margin-bottom: 20px; letter-spacing: 1px;}
-        label { display: block; margin-top: 15px; font-weight: bold; color: #00E5FF; font-size: 14px;}
-        textarea { width: 100%; height: 70px; margin-top: 5px; background: #0A0B10; border: 1px solid #B388FF; color: #fff; padding: 10px; border-radius: 8px; box-sizing: border-box; font-family: inherit;}
-        select { width: 100%; padding: 8px; margin-bottom: 15px; background: #0A0B10; color: #fff; border: 1px solid #00E5FF; border-radius: 6px; }
-        .btn-save { width: 100%; padding: 14px; margin-top: 20px; background: linear-gradient(90deg, #0052D4, #00C9FF); color: #fff; border: none; font-weight: bold; font-size: 16px; border-radius: 8px; cursor: pointer; }
-        .btn-sync { width: 100%; padding: 10px; margin-top: 10px; background: transparent; color: #B388FF; border: 1px solid #B388FF; font-weight: bold; border-radius: 8px; cursor: pointer; display: none;}
-        #statusMessage { margin-top: 15px; text-align: center; font-size: 13px; font-weight: bold; min-height: 20px;}
-        .offline-text { color: #FFC107; }
-        .online-text { color: #00E676; }
+        /* Paleta Minimalista y Cálida (Coincide con el Dashboard) */
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: #F9F8F6; color: #2C3539; padding: 20px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 420px; background: #FFFFFF; padding: 30px; border-radius: 16px; border: 1px solid #E5E4E0; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        
+        h1 { color: #2C3539; text-align: center; font-size: 26px; font-weight: 800; letter-spacing: 1.5px; margin-bottom: 5px; margin-top: 0;}
+        .tagline { color: #888; text-align: center; font-size: 11px; margin-bottom: 25px; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 600;}
+        
+        /* Selector de Idioma Premium */
+        select { width: 100%; padding: 12px 15px; margin-bottom: 25px; background: #F9F8F6; color: #2C3539; border: 1px solid #E5E4E0; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; outline: none; transition: border-color 0.3s; appearance: none; background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%232C3539%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E'); background-repeat: no-repeat; background-position: right 15px top 50%; background-size: 10px auto;}
+        select:focus { border-color: #D9795C; }
+        
+        /* Etiquetas y Campos de Texto */
+        label { display: block; margin-top: 15px; font-weight: 700; color: #2C3539; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;}
+        .lbl-good { color: #2E7D32; }
+        .lbl-bad { color: #C62828; }
+        
+        textarea { width: 100%; height: 80px; margin-top: 8px; margin-bottom: 5px; background: #F9F8F6; border: 1px solid #E5E4E0; color: #2C3539; padding: 15px; border-radius: 10px; box-sizing: border-box; font-family: inherit; font-size: 14px; resize: none; transition: all 0.3s ease;}
+        textarea:focus { outline: none; border-color: #D9795C; background: #FFFFFF; box-shadow: 0 0 0 3px rgba(217, 121, 92, 0.1);}
+        textarea::placeholder { color: #AAA; }
+        
+        /* Botones unificados con el Dashboard */
+        .btn-save { width: 100%; padding: 16px; margin-top: 25px; background: linear-gradient(135deg, #2C3539, #3A454A); color: #FFFFFF; border: none; font-weight: 700; font-size: 15px; border-radius: 10px; cursor: pointer; box-shadow: 0 4px 12px rgba(44, 53, 57, 0.2); transition: all 0.3s ease; letter-spacing: 0.5px;}
+        .btn-save:hover { background: linear-gradient(135deg, #1A2124, #2C3539); box-shadow: 0 6px 16px rgba(44, 53, 57, 0.35); transform: translateY(-2px); }
+        .btn-save:active { transform: translateY(0); }
+        
+        .btn-sync { width: 100%; padding: 14px; margin-top: 15px; background: #FFFFFF; color: #D9795C; border: 2px solid #D9795C; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(217, 121, 92, 0.05); display: none;}
+        .btn-sync:hover { background: #D9795C; color: #FFFFFF; box-shadow: 0 6px 14px rgba(217, 121, 92, 0.25); transform: translateY(-2px); }
+        
+        /* Mensajes de Estado */
+        #statusMessage { margin-top: 20px; text-align: center; font-size: 13px; font-weight: 700; min-height: 20px; padding: 10px; border-radius: 8px;}
+        .offline-text { color: #D9795C; background: #FFF9F8; border: 1px dashed #D9795C; }
+        .online-text { color: #2E7D32; background: #F1F8E9; border: 1px solid #A5D6A7; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>NOURA</h1>
-    <div class="tagline">EDGE AI UTILITY</div>
+    <div class="tagline">Offline Feedback</div>
 
-    <!-- Detección de idioma simulada -->
+    <!-- Detección de idioma -->
     <select id="langSelector" onchange="changeLanguage()">
         <option value="es">🇪🇸 Español</option>
-        <option value="en">🇺🇸 English</option>
+        <option value="en" selected>🇺🇸 English</option>
         <option value="fr">🇫🇷 Français</option>
+        <option value="de">🇩🇪 Deutsch</option>
     </select>
 
     <div id="formSection">
-        <label id="lblGood">¿Qué fue lo que más te gustó? (BIEN)</label>
-        <textarea id="txtGood" placeholder="Escribe aquí..."></textarea>
+        <label id="lblGood" class="lbl-good">What did you like the most? (GOOD)</label>
+        <textarea id="txtGood" placeholder="Write here..."></textarea>
 
-        <label id="lblBad">¿Qué mejorarías? (MAL)</label>
-        <textarea id="txtBad" placeholder="Escribe aquí..."></textarea>
+        <label id="lblBad" class="lbl-bad">What would you improve? (BAD)</label>
+        <textarea id="txtBad" placeholder="Write here..."></textarea>
 
-        <button class="btn-save" id="btnSubmit" onclick="saveDataOffline()">Guardar Reseña</button>
+        <button class="btn-save" id="btnSubmit" onclick="saveDataOffline()">Save Feedback</button>
     </div>
 
-    <div id="statusMessage"></div>
-    <button class="btn-sync" id="btnSync" onclick="syncData()">Simular Conexión (Sincronizar a NOURA)</button>
+    <div id="statusMessage" style="display:none;"></div>
+    <button class="btn-sync" id="btnSync" onclick="syncData()">Simulate Connectivity (Sync to Dashboard)</button>
 </div>
 
 <script>
-    // 1. Diccionario Ultra-Ligero (Menos de 1KB)
     const dict = {
-        es: { good: "¿Qué fue lo que más te gustó? (BIEN)", bad: "¿Qué mejorarías? (MAL)", btn: "Guardar Reseña", saved: "Guardado localmente. Sin conexión a internet 📡", synced: "¡Datos enviados a la operadora! ✅" },
-        en: { good: "What did you like the most? (GOOD)", bad: "What would you improve? (BAD)", btn: "Save Feedback", saved: "Saved locally. No internet connection 📡", synced: "Data forwarded to operator! ✅" },
-        fr: { good: "Qu'avez-vous le plus aimé ? (BIEN)", bad: "Que devrions-nous améliorer ? (MAL)", btn: "Enregistrer", saved: "Enregistré localement. Pas de connexion 📡", synced: "Données envoyées à l'opérateur ! ✅" }
+        es: { good: "¿Qué fue lo que más te gustó? (BIEN)", bad: "¿Qué mejorarías? (MAL)", btn: "Guardar Reseña", saved: "Guardado en tu teléfono. Sin conexión 📡", synced: "¡Enviado a la operadora local! ✅", ph: "Escribe aquí..." },
+        en: { good: "What did you like the most? (GOOD)", bad: "What would you improve? (BAD)", btn: "Save Feedback", saved: "Saved locally. No internet connection 📡", synced: "Data forwarded to local operator! ✅", ph: "Write here..." },
+        fr: { good: "Qu'avez-vous le plus aimé ? (BIEN)", bad: "Que devrions-nous améliorer ? (MAL)", btn: "Enregistrer", saved: "Enregistré localement. Pas de connexion 📡", synced: "Données envoyées à l'opérateur ! ✅", ph: "Écrivez ici..." },
+        de: { good: "Was hat Ihnen am besten gefallen? (GUT)", bad: "Was würden Sie verbessern? (SCHLECHT)", btn: "Speichern", saved: "Lokal gespeichert. Keine Verbindung 📡", synced: "Daten an Betreiber gesendet! ✅", ph: "Hier schreiben..." }
     };
 
-    let currentLang = "es";
-
     function changeLanguage() {
-        currentLang = document.getElementById("langSelector").value;
-        document.getElementById("lblGood").innerText = dict[currentLang].good;
-        document.getElementById("lblBad").innerText = dict[currentLang].bad;
-        document.getElementById("btnSubmit").innerText = dict[currentLang].btn;
+        const lang = document.getElementById("langSelector").value;
+        document.getElementById("lblGood").innerText = dict[lang].good;
+        document.getElementById("lblBad").innerText = dict[lang].bad;
+        document.getElementById("btnSubmit").innerText = dict[lang].btn;
+        document.getElementById("txtGood").placeholder = dict[lang].ph;
+        document.getElementById("txtBad").placeholder = dict[lang].ph;
     }
 
-    // 2. Lógica Store-and-Forward (Almacenamiento Local)
     function saveDataOffline() {
         const goodText = document.getElementById("txtGood").value;
         const badText = document.getElementById("txtBad").value;
+        const lang = document.getElementById("langSelector").value;
 
-        if(!goodText && !badText) return alert("Escribe algo antes de guardar.");
+        if(!goodText && !badText) return alert("Please write something before saving.");
 
-        const feedback = { lang: currentLang, good: goodText, bad: badText, timestamp: new Date().toISOString() };
-        
-        // Guardamos en la memoria del navegador (Simula el caché del teléfono)
-        localStorage.setItem("noura_pending_feedback", JSON.stringify(feedback));
-
-        // Actualizamos UI
         document.getElementById("txtGood").value = "";
         document.getElementById("txtBad").value = "";
-        const status = document.getElementById("statusMessage");
-        status.innerText = dict[currentLang].saved;
-        status.className = "offline-text";
         
-        // Mostramos el botón para simular que regresó el internet
+        const status = document.getElementById("statusMessage");
+        status.innerText = dict[lang].saved;
+        status.className = "offline-text";
+        status.style.display = "block";
+        
         document.getElementById("btnSync").style.display = "block";
     }
 
-    // 3. Simulación del Forward (Cuando detecta Wi-Fi)
     function syncData() {
-        const pendingData = localStorage.getItem("noura_pending_feedback");
-        if(pendingData) {
-            console.log("Enviando paquete a Small AI de la operadora:", JSON.parse(pendingData));
-            localStorage.removeItem("noura_pending_feedback");
-            
-            const status = document.getElementById("statusMessage");
-            status.innerText = dict[currentLang].synced;
-            status.className = "online-text";
-            document.getElementById("btnSync").style.display = "none";
-        }
+        const lang = document.getElementById("langSelector").value;
+        const status = document.getElementById("statusMessage");
+        status.innerText = dict[lang].synced;
+        status.className = "online-text";
+        document.getElementById("btnSync").style.display = "none";
+        
+        setTimeout(() => { status.style.display = "none"; }, 4000);
     }
 </script>
 
