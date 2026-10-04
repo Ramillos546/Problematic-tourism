@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOURA - Ecosistema Completo</title>
+    <style>
+        /* Paleta Minimalista y Cálida */
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: #F9F8F6; color: #2C3539; padding: 20px; display: flex; justify-content: center; margin: 0;}
+        .container { width: 100%; max-width: 480px; background: #FFFFFF; padding: 0; border-radius: 16px; border: 1px solid #E5E4E0; box-shadow: 0 10px 30px rgba(0,0,0,0.05); overflow: hidden; }
+        
+        /* Navegación por pestañas */
+        .tabs { display: flex; background: #F9F8F6; border-bottom: 1px solid #E5E4E0; }
+        .tab-btn { flex: 1; padding: 15px; text-align: center; font-size: 14px; font-weight: 700; color: #888; background: transparent; border: none; cursor: pointer; transition: all 0.3s ease; }
+        .tab-btn.active { color: #D9795C; background: #FFFFFF; border-bottom: 3px solid #D9795C; }
+        .tab-btn:hover:not(.active) { background: #F0EFEA; }
+
+        .content-section { padding: 30px; display: none; }
+        .content-section.active { display: block; animation: fadeIn 0.4s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        h1 { color: #2C3539; text-align: center; font-size: 24px; font-weight: 800; letter-spacing: 1.5px; margin-top: 0; margin-bottom: 5px;}
+        .tagline { color: #888; text-align: center; font-size: 11px; margin-bottom: 20px; letter-spacing: 1px; text-transform: uppercase; font-weight: 600;}
+        
+        /* --- ESTILOS TURISTA --- */
+        select { width: 100%; padding: 12px 15px; margin-bottom: 20px; background: #F9F8F6; color: #2C3539; border: 1px solid #E5E4E0; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; outline: none; appearance: none; }
+        select:focus { border-color: #D9795C; }
+        
+        label { display: block; margin-top: 15px; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;}
+        .lbl-good { color: #2E7D32; }
+        .lbl-bad { color: #C62828; }
+        
+        textarea { width: 100%; height: 70px; margin-top: 8px; margin-bottom: 5px; background: #F9F8F6; border: 1px solid #E5E4E0; color: #2C3539; padding: 15px; border-radius: 10px; box-sizing: border-box; font-family: inherit; font-size: 14px; resize: none; transition: all 0.3s ease;}
+        textarea:focus { outline: none; border-color: #D9795C; background: #FFFFFF; box-shadow: 0 0 0 3px rgba(217, 121, 92, 0.1);}
+        
+        /* --- ESTILOS OPERADORA --- */
+        .header-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #E5E4E0; padding-bottom: 15px;}
+        .raw-data { background: #F5F4F0; padding: 15px; border-radius: 10px; font-family: 'Courier New', monospace; font-size: 11px; color: #555; margin-bottom: 24px; min-height: 200px; max-height: 250px; overflow-y: auto; line-height: 1.6; border: 1px solid #E5E4E0;}
+        .translated-text { color: #D9795C; display: block; margin-bottom: 8px; font-weight: bold; font-family: 'Segoe UI', sans-serif; font-size: 12px; margin-left: 10px;}
+        
+        /* --- BOTONES PREMIUM --- */
+        .btn-primary { width: 100%; padding: 16px; margin-top: 15px; background: linear-gradient(135deg, #2C3539, #3A454A); color: #FFFFFF; border: none; font-weight: 700; font-size: 14px; border-radius: 10px; cursor: pointer; box-shadow: 0 4px 12px rgba(44, 53, 57, 0.2); transition: all 0.3s ease; letter-spacing: 0.5px;}
+        .btn-primary:hover { background: linear-gradient(135deg, #1A2124, #2C3539); box-shadow: 0 6px 16px rgba(44, 53, 57, 0.35); transform: translateY(-2px); }
+        
+        .btn-outline { width: 100%; padding: 14px; margin-top: 15px; background: #FFFFFF; color: #D9795C; border: 2px solid #D9795C; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.3s ease; display: none;}
+        .btn-outline:hover { background: #D9795C; color: #FFFFFF; transform: translateY(-2px); }
+        
+        .btn-reload { background: #FFFFFF; color: #D9795C; border: 1px solid #E5E4E0; padding: 6px 12px; border-radius: 20px; cursor: pointer; font-size: 11px; font-weight: 700; transition: all 0.2s ease; }
+        .btn-reload:hover { border-color: #D9795C; background: #FFF9F8; transform: translateY(-1px); }
+
+        /* --- DASHBOARD Y TERMINAL --- */
+        .terminal { background: #F9F8F6; border-left: 4px solid #D9795C; padding: 15px; font-family: monospace; font-size: 13px; color: #2C3539; display: none; margin-bottom: 20px; border-radius: 0 8px 8px 0;}
+        .highlight { color: #D9795C; font-weight: bold; }
+        
+        .dashboard { display: none; background: #FFFFFF; margin-top: 10px;}
+        .report-header { background: #F9F8F6; padding: 15px; border-radius: 10px; text-align: center; margin-bottom: 20px; border: 1px solid #E5E4E0;}
+        .report-header h3 { margin: 0; color: #2C3539; font-size: 16px; font-weight: 800;}
+        
+        .card-title { font-size: 12px; color: #888; font-weight: bold; margin-bottom: 12px; margin-top: 15px; text-transform: uppercase; letter-spacing: 1px;}
+        .stat { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #F0F0F0; font-weight: 600;}
+        .stat:last-child { border-bottom: none; }
+        .sugerencias-box { background: #FFF9F8; border-left: 4px solid #D9795C; padding: 18px; border-radius: 0 8px 8px 0; margin-top: 20px; font-size: 13px; color: #2C3539; line-height: 1.6;}
+        
+        .tag-good { color: #2E7D32; font-weight: bold; }
+        .tag-bad { color: #C62828; font-weight: bold; }
+        
+        #statusMessage { margin-top: 15px; text-align: center; font-size: 13px; font-weight: 700; padding: 10px; border-radius: 8px; display: none;}
+        .offline-text { color: #D9795C; background: #FFF9F8; border: 1px dashed #D9795C; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Pestañas de Navegación -->
+    <div class="tabs">
+        <button class="tab-btn active" id="tab1" onclick="switchTab('tourist')">📱 PWA Turista</button>
+        <button class="tab-btn" id="tab2" onclick="switchTab('operator')">📊 Motor Operadora</button>
+    </div>
+
+    <!-- VISTA 1: TURISTA -->
+    <div id="viewTourist" class="content-section active">
+        <h1>NOURA</h1>
+        <div class="tagline">Feedback Offline</div>
+
+        <select id="langSelector" onchange="changeLanguage()">
+            <option value="es">🇪🇸 Español</option>
+            <option value="en" selected>🇺🇸 English</option>
+            <option value="fr">🇫🇷 Français</option>
+        </select>
+
+        <label id="lblGood" class="lbl-good">What did you like the most? (GOOD)</label>
+        <textarea id="txtGood" placeholder="Write here..."></textarea>
+
+        <label id="lblBad" class="lbl-bad">What would you improve? (BAD)</label>
+        <textarea id="txtBad" placeholder="Write here..."></textarea>
+
+        <button class="btn-primary" id="btnSubmit" onclick="saveDataOffline()">Save Feedback</button>
+
+        <div id="statusMessage"></div>
+        <button class="btn-outline" id="btnSync" onclick="syncData()">Simulate Connect & Sync</button>
+    </div>
+
+    <!-- VISTA 2: OPERADORA (AI) -->
+    <div id="viewOperator" class="content-section">
+        <div class="header-controls">
+            <h1 id="weekTitle" style="font-size:20px; margin:0;">NOURA</h1>
+            <button class="btn-reload" onclick="cargarEscenarioAleatorio()">Siguiente Sem. ↻</button>
+        </div>
+        
+        <div style="font-size: 13px; color: #888; margin-bottom: 8px; font-weight: 600;">Paquetes offline recibidos:</div>
+        <div class="raw-data" id="rawDataBox"></div>
+
+        <button class="btn-primary" id="btnProcess" onclick="iniciarProcesamiento()">Activar Análisis Small AI</button>
+
+        <div class="terminal" id="terminalBox"></div>
+
+        <div class="dashboard" id="dashboardBox">
+            <div class="report-header">
+                <h3>Reporte de Instinto</h3>
+            </div>
+            
+            <div class="card-title">Aciertos Detectados</div>
+            <div class="stat"><span id="goodText"></span> <span id="goodCount" style="color:#2E7D32;"></span></div>
+            
+            <div class="card-title" style="margin-top: 20px;">Fricciones Detectadas</div>
+            <div class="stat"><span id="badText"></span> <span id="badCount" style="color:#C62828;"></span></div>
+
+            <button class="btn-outline" style="display:block; margin-top:20px;" id="btnSugerencias" onclick="mostrarSugerencias()"></button>
+            <div id="sugerenciasBox" class="sugerencias-box" style="display:none;"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- NAVEGACIÓN ---
+    function switchTab(tab) {
+        document.getElementById('viewTourist').classList.remove('active');
+        document.getElementById('viewOperator').classList.remove('active');
+        document.getElementById('tab1').classList.remove('active');
+        document.getElementById('tab2').classList.remove('active');
+
+        if(tab === 'tourist') {
+            document.getElementById('viewTourist').classList.add('active');
+            document.getElementById('tab1').classList.add('active');
+        } else {
+            document.getElementById('viewOperator').classList.add('active');
+            document.getElementById('tab2').classList.add('active');
+        }
+    }
+
+    // --- LÓGICA TURISTA ---
+    const dict = {
+        es: { good: "¿Qué fue lo que más te gustó? (BIEN)", bad: "¿Qué mejorarías? (MAL)", btn: "Guardar Reseña", saved: "Guardado localmente. Sin conexión 📡", syncBtn: "Simular Conexión y Sincronizar" },
+        en: { good: "What did you like the most? (GOOD)", bad: "What would you improve? (BAD)", btn: "Save Feedback", saved: "Saved locally. No connection 📡", syncBtn: "Simulate Connect & Sync" },
+        fr: { good: "Qu'avez-vous le plus aimé ? (BIEN)", bad: "Que devrions-nous améliorer ? (MAL)", btn: "Enregistrer", saved: "Enregistré localement. Pas de connexion 📡", syncBtn: "Simuler la connexion" }
+    };
+
+    function changeLanguage() {
+        const lang = document.getElementById("langSelector").value;
+        document.getElementById("lblGood").innerText = dict[lang].good;
+        document.getElementById("lblBad").innerText = dict[lang].bad;
+        document.getElementById("btnSubmit").innerText = dict[lang].btn;
+        document.getElementById("btnSync").innerText = dict[lang].syncBtn;
+    }
+
+    function saveDataOffline() {
+        if(!document.getElementById("txtGood").value && !document.getElementById("txtBad").value) return;
+        document.getElementById("txtGood").value = "";
+        document.getElementById("txtBad").value = "";
+        
+        const status = document.getElementById("statusMessage");
+        status.innerText = dict[document.getElementById("langSelector").value].saved;
+        status.className = "offline-text";
+        status.style.display = "block";
+        document.getElementById("btnSync").style.display = "block";
+    }
+
+    function syncData() {
+        document.getElementById("statusMessage").style.display = "none";
+        document.getElementById("btnSync").style.display = "none";
+        // Efecto WOW: Cambia automáticamente a la vista de la operadora al sincronizar
+        switchTab('operator'); 
+    }
+
+    // --- LÓGICA OPERADORA (AI) ---
+    const escenarios = [
+        {
+            semana: 42,
+            raw: '<b>[10:02] Turista 1 (EN)</b><br><span class="tag-good">BIEN:</span> "The traditional food was amazing."<br><span class="tag-bad">MAL:</span> "The final hike is too tiring."<br><br><b>[11:15] Turista 2 (FR)</b><br><span class="tag-good">BIEN:</span> "J\'ai adoré la nourriture."<br><span class="tag-bad">MAL:</span> "Trop chaud à la fin."<br><br><b>[13:20] Turista 3 (ES)</b><br><span class="tag-good">BIEN:</span> "Rica comida."<br><span class="tag-bad">MAL:</span> "La caminata final es pesada."<br><br><b>[15:45] Turista 4 (EN)</b><br><span class="tag-good">BIEN:</span> "Amazing food!"<br><span class="tag-bad">MAL:</span> "The last part is exhausting."<br>',
+            rawTranslated: '<b>[10:02] Turista 1 (EN)</b><br><span class="tag-good">BIEN:</span> "The traditional food was amazing."<br><span class="translated-text">↳ [ES]: "La comida tradicional estuvo increíble."</span><span class="tag-bad">MAL:</span> "The final hike is too tiring."<br><span class="translated-text">↳ [ES]: "La caminata final es muy cansada."</span><br><b>[11:15] Turista 2 (FR)</b><br><span class="tag-good">BIEN:</span> "J\'ai adoré la nourriture."<br><span class="translated-text">↳ [ES]: "Me encantó la comida."</span><span class="tag-bad">MAL:</span> "Trop chaud à la fin."<br><span class="translated-text">↳ [ES]: "Demasiado calor al final."</span><br><b>[13:20] Turista 3 (ES)</b><br><span class="tag-good">BIEN:</span> "Rica comida."<br><span class="translated-text">↳ [ES]: "Rica comida."</span><span class="tag-bad">MAL:</span> "La caminata final es pesada."<br><span class="translated-text">↳ [ES]: "La caminata final es pesada."</span><br><b>[15:45] Turista 4 (EN)</b><br><span class="tag-good">BIEN:</span> "Amazing food!"<br><span class="translated-text">↳ [ES]: "¡Comida increíble!"</span><span class="tag-bad">MAL:</span> "The last part is exhausting."<br><span class="translated-text">↳ [ES]: "La última parte es agotadora."</span><br>',
+            good: 'Gastronomía tradicional', goodC: '4 menciones', bad: 'Cansancio/Calor al final', badC: '4 menciones',
+            pregunta: '¿Generar ideas para "Cansancio al final"?',
+            sugerencias: '<strong>Oportunidades de Innovación:</strong><br><br>• Ofrecer "Kits de hidratación" extra antes de iniciar el ascenso.<br>• Crear una pequeña parada de descanso sombreada a los 2km.'
+        },
+        {
+            semana: 43,
+            raw: '<b>[09:10] Turista 1 (DE)</b><br><span class="tag-good">BIEN:</span> "Tolle Aussicht."<br><span class="tag-bad">MAL:</span> "Ich konnte den Guide nicht verstehen."<br><br><b>[12:05] Turista 2 (EN)</b><br><span class="tag-good">BIEN:</span> "Beautiful views!"<br><span class="tag-bad">MAL:</span> "Wish there was an English translation."<br><br><b>[14:30] Turista 3 (ES)</b><br><span class="tag-good">BIEN:</span> "Me encantó el paisaje."<br><span class="tag-bad">MAL:</span> "Faltó un poco de historia local."<br><br><b>[16:15] Turista 4 (FR)</b><br><span class="tag-good">BIEN:</span> "Belles vues."<br><span class="tag-bad">MAL:</span> "Le guide ne parle pas français."<br>',
+            rawTranslated: '<b>[09:10] Turista 1 (DE)</b><br><span class="tag-good">BIEN:</span> "Tolle Aussicht."<br><span class="translated-text">↳ [ES]: "Grandes vistas."</span><span class="tag-bad">MAL:</span> "Ich konnte den Guide nicht verstehen."<br><span class="translated-text">↳ [ES]: "No pude entender al guía."</span><br><b>[12:05] Turista 2 (EN)</b><br><span class="tag-good">BIEN:</span> "Beautiful views!"<br><span class="translated-text">↳ [ES]: "¡Hermosas vistas!"</span><span class="tag-bad">MAL:</span> "Wish there was an English translation."<br><span class="translated-text">↳ [ES]: "Ojalá hubiera una traducción al inglés."</span><br><b>[14:30] Turista 3 (ES)</b><br><span class="tag-good">BIEN:</span> "Me encantó el paisaje."<br><span class="translated-text">↳ [ES]: "Me encantó el paisaje."</span><span class="tag-bad">MAL:</span> "Faltó un poco de historia local."<br><span class="translated-text">↳ [ES]: "Faltó un poco de historia local."</span><br><b>[16:15] Turista 4 (FR)</b><br><span class="tag-good">BIEN:</span> "Belles vues."<br><span class="translated-text">↳ [ES]: "Hermosas vistas."</span><span class="tag-bad">MAL:</span> "Le guide ne parle pas français."<br><span class="translated-text">↳ [ES]: "El guía no habla francés."</span><br>',
+            good: 'Paisajes y Vistas', goodC: '4 menciones', bad: 'Barrera de idioma', badC: '3 menciones',
+            pregunta: '¿Generar ideas para "Barrera de idioma"?',
+            sugerencias: '<strong>Oportunidades de Innovación:</strong><br><br>• Imprimir folletos con códigos QR que lleven a la historia del lugar traducida.<br>• Grabar un audio-guía básico en inglés para reproducir en paradas clave.'
+        }
+    ];
+
+    let escenarioActual = 0;
+
+    function cargarEscenarioAleatorio() {
+        document.getElementById('btnProcess').style.display = 'block';
+        document.getElementById('terminalBox').style.display = 'none';
+        document.getElementById('dashboardBox').style.display = 'none';
+        document.getElementById('btnSugerencias').style.display = 'block';
+        document.getElementById('sugerenciasBox').style.display = 'none';
+
+        escenarioActual = (escenarioActual + 1) % escenarios.length;
+        const data = escenarios[escenarioActual];
+
+        document.getElementById('weekTitle').innerText = "NOURA - Sem. " + data.semana;
+        document.getElementById('rawDataBox').innerHTML = data.raw; 
+        document.getElementById('goodText').innerText = data.good;
+        document.getElementById('goodCount').innerText = data.goodC;
+        document.getElementById('badText').innerText = data.bad;
+        document.getElementById('badCount').innerText = data.badC;
+        document.getElementById('btnSugerencias').innerText = data.pregunta;
+        document.getElementById('sugerenciasBox').innerHTML = data.sugerencias;
+    }
+
+    async function iniciarProcesamiento() {
+        document.getElementById('btnProcess').style.display = 'none';
+        const terminal = document.getElementById('terminalBox');
+        terminal.style.display = 'block';
+
+        terminal.innerHTML = "Iniciando análisis local...<br>";
+        await sleep(600);
+        terminal.innerHTML += "> <span class='highlight'>Traduciendo</span> campos estructurados...<br>";
+        await sleep(500);
+        document.getElementById('rawDataBox').innerHTML = escenarios[escenarioActual].rawTranslated;
+        await sleep(800);
+        terminal.innerHTML += "> Estructurando <span class='highlight'>Patrones de Retroalimentación</span>...<br>";
+        await sleep(600);
+        terminal.innerHTML += "> <span style='color:#2E7D32;'>Diagnóstico completado.</span>";
+        await sleep(500);
+
+        terminal.style.display = 'none';
+        document.getElementById('dashboardBox').style.display = 'block';
+    }
+
+    function mostrarSugerencias() {
+        document.getElementById('btnSugerencias').style.display = 'none';
+        document.getElementById('sugerenciasBox').style.display = 'block';
+    }
+
+    function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+
+    window.onload = () => { escenarioActual = -1; cargarEscenarioAleatorio(); };
+</script>
+
+</body>
+</html>
