@@ -3,411 +3,255 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NOURA - Motor Edge AI Dinámico</title>
+<title>NOURA - Ecosistema Completo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500&display=swap">
 <style>
 :root,[data-theme="dark"]{--bg:#0E0F10;--bg2:#161718;--line:#2A2C2E;--text:#F2F2F0;--muted:#8C9094;--inv-bg:#F2F2F0;--inv-text:#0E0F10;--good:#7FB08A;--bad:#D98A84;--focus:#fff}
-[data-theme="light"]{--bg:#FFFFFF;--bg2:#F2F2F0;--line:#D4D5D6;--text:#0E0F10;--muted:#6B6F73;--inv-bg:#0E0F10;--inv-text:#F2F2F0;--good:#2F6B3C;--bad:#A8382F;--focus:#000}
-*{box-sizing:border-box}
+[data-theme="light"]{--bg:#FFF;--bg2:#F2F2F0;--line:#D4D5D6;--text:#0E0F10;--muted:#6B6F73;--inv-bg:#0E0F10;--inv-text:#F2F2F0;--good:#2F6B3C;--bad:#A8382F;--focus:#000}
+*{box-sizing:border-box}[hidden]{display:none!important}
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--text);font:400 14px/1.8 Inter,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
 :focus-visible{outline:2px solid var(--focus);outline-offset:3px}
-.display,h1,h2,h3,.num,.btn,.badge,.mono{font-family:"Space Grotesk","Helvetica Neue",Arial,sans-serif}
+h1,h2,h3,.btn,.badge,.logo{font-family:"Space Grotesk","Helvetica Neue",Arial,sans-serif}
 .wrap{max-width:1200px;margin:0 auto;padding:0 24px}
-/* preloader */
 #pre{position:fixed;inset:0;background:#0E0F10;color:#F2F2F0;z-index:100;display:flex;align-items:flex-end;justify-content:space-between;padding:24px;transition:opacity .6s,visibility .6s}
-#pre.hide{opacity:0;visibility:hidden}
+#pre.hide{opacity:0;visibility:hidden;pointer-events:none}
+#pre{animation:preOut .5s ease 2.4s forwards}
+@keyframes preOut{to{opacity:0;visibility:hidden;pointer-events:none}}
 #pre .count{font:700 clamp(80px,22vw,260px)/.85 "Space Grotesk",Arial,sans-serif;letter-spacing:-.04em}
 #pre .tag{font:500 12px "Space Grotesk",Arial;letter-spacing:.2em;text-transform:uppercase;color:#8C9094;padding-bottom:12px}
-/* header */
 header.top{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--line)}
 .top-in{display:flex;align-items:center;justify-content:space-between;height:60px}
-.logo{font:700 18px "Space Grotesk",Arial;letter-spacing:.24em}
-.top-r{display:flex;align-items:center;gap:24px}
-.lang{font:500 12px "Space Grotesk",Arial;letter-spacing:.14em;background:none;border:0;color:var(--muted);cursor:pointer;padding:8px 0}
-.lang b{color:var(--text)}
+.logo{font-weight:700;font-size:18px;letter-spacing:.24em}
 .menu-btn{font:500 12px "Space Grotesk",Arial;letter-spacing:.2em;text-transform:uppercase;background:none;border:1px solid var(--line);color:var(--text);padding:10px 18px;cursor:pointer}
 .menu-btn:hover{background:var(--inv-bg);color:var(--inv-text)}
-/* overlay */
 #overlay{position:fixed;inset:0;background:var(--bg);z-index:80;transform:translateY(-100%);transition:transform .5s cubic-bezier(.7,0,.2,1);display:flex;flex-direction:column}
 #overlay.open{transform:none}
 .ov-head{display:flex;justify-content:space-between;align-items:center;height:60px;padding:0 24px;border-bottom:1px solid var(--line)}
 .ov-nav{flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 24px;max-width:1200px;width:100%;margin:0 auto}
-.ov-nav a{display:flex;gap:24px;align-items:baseline;font:700 clamp(36px,8vw,88px)/1.1 "Space Grotesk",Arial;letter-spacing:-.03em;text-transform:uppercase;color:var(--text);text-decoration:none;padding:8px 0;border-bottom:1px solid var(--line)}
+.ov-nav a{display:flex;gap:24px;align-items:baseline;font:700 clamp(36px,8vw,88px)/1.1 "Space Grotesk",Arial;letter-spacing:-.03em;text-transform:uppercase;color:var(--text);text-decoration:none;padding:8px 0;border-bottom:1px solid var(--line);cursor:pointer}
 .ov-nav a span{font-size:12px;letter-spacing:.2em;color:var(--muted);font-weight:500}
 .ov-nav a:hover{padding-left:16px;transition:padding .3s}
-.ov-foot{padding:16px 24px;display:flex;justify-content:space-between;color:var(--muted);font-size:12px}
-/* hero */
-.hero{padding:72px 0 48px;border-bottom:1px solid var(--line)}
-.hero h1{font-size:clamp(56px,13vw,176px);line-height:.88;letter-spacing:-.05em;margin:0 0 32px;font-weight:700;text-transform:uppercase}
-.hero-row{display:grid;gap:24px;grid-template-columns:1fr;align-items:end}
-@media(min-width:900px){.hero-row{grid-template-columns:1fr 1fr}}
+.ov-foot{padding:16px 24px;display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:12px}
+.hero{padding:56px 0 40px}
+.hero h1{font-size:clamp(48px,11vw,150px);line-height:.88;letter-spacing:-.05em;margin:0 0 16px;font-weight:700;text-transform:uppercase}
 .hero p{margin:0;max-width:44ch;color:var(--muted)}
-.meta{display:flex;gap:12px;flex-wrap:wrap;justify-content:flex-start}
-@media(min-width:900px){.meta{justify-content:flex-end}}
-/* sections */
-section.blk{padding:64px 0;border-bottom:1px solid var(--line)}
-.sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:32px}
-.sec-head h2{margin:0;font-size:clamp(28px,4vw,44px);letter-spacing:-.03em;text-transform:uppercase;line-height:1}
-.sec-head .idx{display:block;font:500 12px "Space Grotesk",Arial;letter-spacing:.2em;color:var(--muted);margin-bottom:12px}
-.btn{font-weight:500;font-size:12px;letter-spacing:.16em;text-transform:uppercase;background:none;color:var(--text);border:1px solid var(--text);padding:14px 22px;min-height:48px;cursor:pointer;display:inline-flex;gap:12px;align-items:center;justify-content:space-between;transition:background .25s,color .25s}
-.btn::after{content:"→";transition:transform .25s}
-.btn:hover{background:var(--inv-bg);color:var(--inv-text)}.btn:hover::after{transform:translateX(4px)}
-.btn.solid{background:var(--inv-bg);color:var(--inv-text);width:100%}
-.btn.solid:hover{background:transparent;color:var(--text)}
-.seg{display:inline-flex;border:1px solid var(--line)}
-.seg button{font:500 12px "Space Grotesk",Arial;letter-spacing:.14em;text-transform:uppercase;background:none;color:var(--muted);border:0;padding:0 20px;min-height:44px;cursor:pointer}
-.seg button+button{border-left:1px solid var(--line)}
-.seg button.on{background:var(--inv-bg);color:var(--inv-text)}
-.badge{display:inline-block;font-weight:500;font-size:11px;letter-spacing:.14em;text-transform:uppercase;border:1px solid var(--line);padding:3px 10px;color:var(--muted)}
-.badge.inv{background:var(--inv-bg);color:var(--inv-text);border-color:var(--inv-bg)}
-/* rigid grid */
-.grid2{display:grid;grid-template-columns:1fr;gap:1px;background:var(--line);border:1px solid var(--line)}
-@media(min-width:900px){.grid2{grid-template-columns:1fr 1fr}}
-.cell{background:var(--bg);padding:32px}
-.cell h3{margin:0 0 4px;font-size:18px;text-transform:uppercase;letter-spacing:.02em}
-.cell .sub{color:var(--muted);margin:0 0 20px;font-size:13px}
-.raw-data{background:var(--bg2);border:1px solid var(--line);padding:16px;font:12.5px/1.8 "SFMono-Regular",Consolas,monospace;min-height:260px;max-height:340px;overflow-y:auto;margin-bottom:24px}
-.tr{display:block;margin:0 0 8px 12px;color:var(--muted);font-weight:500;font-family:Inter,Arial;font-size:12px}
-.tag-good{color:var(--good);font-weight:700}.tag-bad{color:var(--bad);font-weight:700}
-.terminal{display:none;background:var(--bg2);border-left:2px solid var(--text);padding:16px;font:12.5px/1.8 monospace}
-.highlight{font-weight:700;text-decoration:underline}
-.empty{border:1px dashed var(--line);padding:56px 24px;text-align:center;color:var(--muted)}
-.cell:has(#dashboardBox[style*="block"]) .empty,.cell:has(#terminalBox[style*="block"]) .empty{display:none}
-.dashboard{display:none}
-.kpis{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line)}
-.kpi{background:var(--bg);padding:20px}
-.kpi .k{font:500 11px "Space Grotesk",Arial;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
-.kpi .num{font-size:36px;font-weight:700;letter-spacing:-.03em;line-height:1.1;margin:12px 0 4px}
-.kpi .t{font-size:13px}
-.sug{display:none;border-top:1px solid var(--line);margin-top:20px;padding-top:20px;line-height:1.9}
-#btnSug{margin-top:24px;width:100%}
-/* case cards */
-.cards{display:grid;grid-template-columns:1fr;gap:1px;background:var(--line);border:1px solid var(--line)}
-@media(min-width:800px){.cards{grid-template-columns:repeat(3,1fr)}}
-.card{background:var(--bg);cursor:pointer;display:flex;flex-direction:column;text-align:left;border:0;color:inherit;padding:0;font:inherit}
-.card .img{aspect-ratio:4/3;background:linear-gradient(135deg,#1c1d1f,#3a3d40);display:flex;align-items:flex-end;padding:16px;overflow:hidden;position:relative}
-[data-theme="light"] .card .img{background:linear-gradient(135deg,#d9dadb,#9a9da0)}
-.card .img::before{content:attr(data-n);position:absolute;right:12px;top:4px;font:700 96px/1 "Space Grotesk",Arial;letter-spacing:-.05em;color:rgba(255,255,255,.12);transition:transform .5s}
-.card:hover .img::before{transform:scale(1.15) translateY(8px)}
-.card .body{padding:20px 24px 24px;display:flex;flex-direction:column;gap:8px;flex:1}
-.card h3{margin:0;font-size:20px;letter-spacing:-.02em;line-height:1.2}
-.card .date{font-size:12px;color:var(--muted)}
-.card .go{margin-top:auto;padding-top:16px;font:500 12px "Space Grotesk",Arial;letter-spacing:.16em;text-transform:uppercase}
-.card .go::after{content:" →"}
-.card:hover h3{text-decoration:underline;text-underline-offset:4px}
-/* footer */
-footer.f{padding:56px 0 32px}
-.fgrid{display:grid;grid-template-columns:1fr;gap:32px;padding-bottom:40px;border-bottom:1px solid var(--line)}
-@media(min-width:800px){.fgrid{grid-template-columns:2fr 1fr 1fr 1fr}}
-.fgrid h4{font:500 11px "Space Grotesk",Arial;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin:0 0 12px}
-.fgrid a{display:block;color:var(--text);text-decoration:none;padding:2px 0}.fgrid a:hover{text-decoration:underline}
-.fbig{font:700 clamp(40px,8vw,96px)/.9 "Space Grotesk",Arial;letter-spacing:-.04em;text-transform:uppercase}
-.legal{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;padding-top:24px;font-size:12px;color:var(--muted)}
-
+.app{max-width:720px;margin:0 auto 64px;border:1px solid var(--line)}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border-bottom:1px solid var(--line)}
+.tab-btn{font:500 12px "Space Grotesk",Arial;letter-spacing:.16em;text-transform:uppercase;background:var(--bg);color:var(--muted);border:0;min-height:56px;cursor:pointer}
+.tab-btn:hover:not(.on){color:var(--text);background:var(--bg2)}
+.tab-btn.on{background:var(--inv-bg);color:var(--inv-text)}
+.pane{padding:32px;animation:fi .4s}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.pane h2{margin:0 0 4px;font-size:28px;letter-spacing:-.02em;text-transform:uppercase}
+.tagline{font:500 11px "Space Grotesk",Arial;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:24px}
 .fld{display:block;font:500 11px "Space Grotesk",Arial;letter-spacing:.16em;text-transform:uppercase;margin:0 0 8px}
 .fld.g{color:var(--good)}.fld.b{color:var(--bad)}
 .inp{width:100%;background:var(--bg2);color:var(--text);border:1px solid var(--line);padding:14px 16px;font:400 14px/1.6 Inter,Arial,sans-serif;border-radius:0;resize:vertical;margin-bottom:24px;display:block}
 .inp:focus{outline:2px solid var(--focus);outline-offset:0;border-color:var(--text)}
 select.inp{min-height:48px;margin-bottom:28px;appearance:none;cursor:pointer}
 textarea.inp{min-height:96px}
-.status{border:1px dashed var(--line);padding:14px 16px;font:500 13px "Space Grotesk",Arial;margin-top:16px;color:var(--muted)}
-.status.warn{border-color:var(--bad);color:var(--bad)}.status.ok{border-color:var(--good);color:var(--good)}
-.q{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line);font-size:13px}
-.q .badge{flex:none}
-.q em{display:block;font-style:normal;color:var(--muted)}
-.qh{display:flex;justify-content:space-between;margin-bottom:8px}
-@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+.btn{font-weight:500;font-size:12px;letter-spacing:.16em;text-transform:uppercase;background:none;color:var(--text);border:1px solid var(--text);padding:14px 22px;min-height:48px;cursor:pointer;display:inline-flex;gap:12px;align-items:center;justify-content:space-between;width:100%;margin-top:16px;transition:background .25s,color .25s}
+.btn::after{content:"→";transition:transform .25s}
+.btn:hover{background:var(--inv-bg);color:var(--inv-text)}.btn:hover::after{transform:translateX(4px)}
+.btn.solid{background:var(--inv-bg);color:var(--inv-text);margin-top:0}
+.btn.solid:hover{background:transparent;color:var(--text)}
+.btn.sm{width:auto;margin:0;min-height:40px;padding:8px 16px}
+.status{border:1px dashed var(--bad);color:var(--bad);padding:14px 16px;font:500 13px "Space Grotesk",Arial;margin-top:16px;text-align:center}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:16px}
+.bar h2{font-size:20px;margin:0}
+.sub{color:var(--muted);margin:0 0 8px;font-size:13px}
+.raw-data{background:var(--bg2);border:1px solid var(--line);padding:16px;font:12.5px/1.8 "SFMono-Regular",Consolas,monospace;min-height:220px;max-height:260px;overflow-y:auto;margin-bottom:24px}
+.tr{display:block;margin:0 0 8px 12px;color:var(--muted);font-weight:500;font-family:Inter,Arial;font-size:12px}
+.tag-good{color:var(--good);font-weight:700}.tag-bad{color:var(--bad);font-weight:700}
+.terminal{background:var(--bg2);border-left:2px solid var(--text);padding:16px;font:12.5px/1.8 monospace;margin-bottom:24px}
+.highlight{font-weight:700;text-decoration:underline}
+.rep{border:1px solid var(--line);padding:14px;text-align:center;margin-bottom:8px}
+.rep h3{margin:0;font-size:16px;text-transform:uppercase;letter-spacing:.04em}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line)}
+.kpi{background:var(--bg);padding:20px}
+.kpi .k{font:500 11px "Space Grotesk",Arial;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.kpi .n{font:700 32px/1.1 "Space Grotesk",Arial;letter-spacing:-.03em;margin:12px 0 4px}
+.sug{border-top:1px solid var(--line);margin-top:20px;padding-top:20px;line-height:1.9}
+footer.f{padding:48px 0 32px;border-top:1px solid var(--line)}
+.fgrid{display:grid;grid-template-columns:1fr;gap:32px;padding-bottom:32px;border-bottom:1px solid var(--line)}
+@media(min-width:800px){.fgrid{grid-template-columns:2fr 1fr 1fr 1fr}}
+.fgrid h4{font:500 11px "Space Grotesk",Arial;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin:0 0 12px}
+.fgrid a{display:block;color:var(--text);text-decoration:none;padding:2px 0;cursor:pointer}.fgrid a:hover{text-decoration:underline}
+.fbig{font:700 clamp(40px,8vw,96px)/.9 "Space Grotesk",Arial;letter-spacing:-.04em;text-transform:uppercase}
+.legal{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;padding-top:24px;font-size:12px;color:var(--muted)}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500&display=swap">
 </head>
 <body>
 <div id="pre" aria-hidden="true"><div class="count" id="preCount">00%</div><div class="tag">NOURA · Edge AI</div></div>
 
 <div id="overlay" role="dialog" aria-label="Menú">
-  <div class="ov-head"><span class="logo">NOURA</span><button class="menu-btn" onclick="menu(false)" data-es="Cerrar ✕" data-en="Close ✕">Cerrar ✕</button></div>
+  <div class="ov-head"><span class="logo">NOURA</span><button class="menu-btn" onclick="menu(false)">Cerrar ✕</button></div>
   <nav class="ov-nav">
-    <a href="#datos" onclick="menu(false)"><span>01</span><b data-es="Datos" data-en="Data">Datos</b></a>
-    <a href="#reporte" onclick="menu(false)"><span>02</span><b data-es="Reporte" data-en="Report">Reporte</b></a>
-    <a href="#captura" onclick="menu(false)"><span>03</span><b data-es="Captura" data-en="Capture">Captura</b></a>
-    <a href="#semanas" onclick="menu(false)"><span>04</span><b data-es="Semanas" data-en="Weeks">Semanas</b></a>
-    <a href="#contacto" onclick="menu(false)"><span>05</span><b data-es="Contacto" data-en="Contact">Contacto</b></a>
+    <a onclick="menu(false);switchTab('tourist')"><span>01</span>PWA Turista</a>
+    <a onclick="menu(false);switchTab('operator')"><span>02</span>Motor Operadora</a>
   </nav>
-  <div class="ov-foot"><button class="btn" id="themeBtn" onclick="toggleTema()">☀️ Modo claro</button><span>© NOURA</span></div>
+  <div class="ov-foot"><button class="btn sm" id="themeBtn" onclick="toggleTema()">☀️ Modo claro</button><span>© NOURA</span></div>
 </div>
 
-<header class="top"><div class="wrap top-in">
-  <span class="logo">NOURA</span>
-  <div class="top-r">
-    <button class="lang" id="langBtn" onclick="setIdioma(idioma==='es'?'en':'es')" aria-label="Idioma"><b>ES</b> / EN</button>
-    <button class="menu-btn" onclick="menu(true)" data-es="Menú" data-en="Menu">Menú</button>
-  </div>
-</div></header>
+<header class="top"><div class="wrap top-in"><span class="logo">NOURA</span><button class="menu-btn" onclick="menu(true)">Menú</button></div></header>
 
 <main>
-<section class="hero"><div class="wrap">
-  <h1>Edge<br>Instinct</h1>
-  <div class="hero-row">
-    <p data-es="Convierte mensajes offline de turistas en aciertos, fricciones y oportunidades de mejora, sin salir del dispositivo." data-en="Turns offline tourist messages into wins, friction points and improvement opportunities, without leaving the device.">Convierte mensajes offline de turistas en aciertos, fricciones y oportunidades de mejora, sin salir del dispositivo.</p>
-    <div class="meta"><span class="badge inv" id="weekTitle">Semana 42</span><span class="badge">Edge AI</span><span class="badge">Offline</span></div>
-  </div>
-</div></section>
+<section class="hero"><div class="wrap"><h1>Ecosistema<br>Completo</h1><p>Captura feedback sin conexión y conviértelo en aciertos, fricciones y oportunidades de mejora.</p></div></section>
 
-<section class="blk" id="datos"><div class="wrap">
-  <div class="sec-head">
-    <div><span class="idx">01 — <span data-es="ANÁLISIS" data-en="ANALYSIS">ANÁLISIS</span></span><h2 data-es="Datos y reporte" data-en="Data & report">Datos y reporte</h2></div>
-    <div style="display:flex;gap:12px;flex-wrap:wrap">
-      <div class="seg" role="group" aria-label="Formato"><button id="fmtSms" onclick="setFormato('sms')">SMS</button><button id="fmtEst" class="on" onclick="setFormato('est')">Estructurado</button></div>
-      <button class="btn" onclick="siguiente()" data-es="Siguiente semana" data-en="Next week">Siguiente semana</button>
-    </div>
+<div class="app" id="app">
+  <div class="tabs">
+    <button class="tab-btn on" id="tab1" onclick="switchTab('tourist')">📱 PWA Turista</button>
+    <button class="tab-btn" id="tab2" onclick="switchTab('operator')">📊 Motor Operadora</button>
   </div>
-  <div class="grid2" id="reporte">
-    <div class="cell">
-      <h3 data-es="Entrada" data-en="Input">Entrada</h3>
-      <p class="sub" id="rawLabel">Paquetes offline estructurados:</p>
-      <div class="raw-data" id="rawDataBox"></div>
-      <button class="btn solid" id="btnProcess" onclick="iniciarProcesamiento()" data-es="Activar análisis Small AI" data-en="Run Small AI analysis">Activar análisis Small AI</button>
-    </div>
-    <div class="cell" aria-live="polite">
-      <h3 data-es="Reporte de instinto" data-en="Instinct report">Reporte de instinto</h3>
-      <p class="sub" data-es="Resultados generados localmente." data-en="Results generated locally.">Resultados generados localmente.</p>
-      <div class="empty" data-es="Activa el análisis para ver el reporte." data-en="Run the analysis to see the report.">Activa el análisis para ver el reporte.</div>
-      <div class="terminal" id="terminalBox"></div>
-      <div class="dashboard" id="dashboardBox">
-        <div class="kpis">
-          <div class="kpi"><div class="k" data-es="Aciertos" data-en="Wins">Aciertos</div><div class="num" id="goodCount" style="color:var(--good)"></div><div class="t" id="goodText"></div></div>
-          <div class="kpi"><div class="k" data-es="Fricciones" data-en="Friction">Fricciones</div><div class="num" id="badCount" style="color:var(--bad)"></div><div class="t" id="badText"></div></div>
-        </div>
-        <button class="btn" id="btnSug" onclick="mostrarSugerencias()"></button>
-        <div class="sug" id="sugBox"></div>
+
+  <div class="pane" id="viewTourist">
+    <h2>NOURA</h2><div class="tagline">Feedback Offline</div>
+    <select class="inp" id="langSelector" onchange="changeLanguage()" aria-label="Language">
+      <option value="es">Español</option><option value="en" selected>English</option><option value="fr">Français</option>
+    </select>
+    <label class="fld g" id="lblGood" for="txtGood">What did you like the most? (GOOD)</label>
+    <textarea class="inp" id="txtGood" placeholder="Write here..."></textarea>
+    <label class="fld b" id="lblBad" for="txtBad">What would you improve? (BAD)</label>
+    <textarea class="inp" id="txtBad" placeholder="Write here..."></textarea>
+    <button class="btn solid" id="btnSubmit" onclick="saveDataOffline()">Save Feedback</button>
+    <div class="status" id="statusMessage" hidden aria-live="polite"></div>
+    <button class="btn" id="btnSync" onclick="syncData()" hidden>Simulate Connect & Sync</button>
+  </div>
+
+  <div class="pane" id="viewOperator" hidden>
+    <div class="bar"><h2 id="weekTitle">NOURA</h2><button class="btn sm" onclick="cargarEscenarioAleatorio()">Siguiente Sem. ↻</button></div>
+    <p class="sub">Paquetes offline recibidos:</p>
+    <div class="raw-data" id="rawDataBox"></div>
+    <button class="btn solid" id="btnProcess" onclick="iniciarProcesamiento()">Activar Análisis Small AI</button>
+    <div class="terminal" id="terminalBox" hidden></div>
+    <div id="dashboardBox" hidden>
+      <div class="rep"><h3>Reporte de Instinto</h3></div>
+      <div class="kpis">
+        <div class="kpi"><div class="k">Aciertos detectados</div><div class="n" id="goodCount" style="color:var(--good)"></div><div id="goodText"></div></div>
+        <div class="kpi"><div class="k">Fricciones detectadas</div><div class="n" id="badCount" style="color:var(--bad)"></div><div id="badText"></div></div>
       </div>
+      <button class="btn" id="btnSugerencias" onclick="mostrarSugerencias()" style="margin-top:24px"></button>
+      <div class="sug" id="sugerenciasBox" hidden></div>
     </div>
   </div>
-</div></section>
-
-<section class="blk" id="captura"><div class="wrap">
-  <div class="sec-head"><div><span class="idx">02 — <span data-es="CAPTURA OFFLINE" data-en="OFFLINE CAPTURE">CAPTURA OFFLINE</span></span><h2 data-es="Feedback del turista" data-en="Tourist feedback">Feedback del turista</h2></div></div>
-  <div class="grid2">
-    <div class="cell">
-      <select class="inp" id="fbLang" onchange="setFormLang()" aria-label="Language">
-        <option value="EN">English</option><option value="ES">Español</option><option value="FR">Français</option><option value="DE">Deutsch</option>
-      </select>
-      <label class="fld g" id="lblGood" for="fbGood"></label>
-      <textarea class="inp" id="fbGood" rows="3"></textarea>
-      <label class="fld b" id="lblBad" for="fbBad"></label>
-      <textarea class="inp" id="fbBad" rows="3"></textarea>
-      <button class="btn solid" id="fbSave" onclick="guardarFeedback()"></button>
-    </div>
-    <div class="cell" aria-live="polite">
-      <div class="qh"><h3 data-es="Cola local" data-en="Local queue">Cola local</h3><span class="badge" id="qCount">0</span></div>
-      <p class="sub" data-es="Paquetes guardados en el dispositivo, pendientes de sincronizar." data-en="Packets stored on the device, waiting to sync.">Paquetes guardados en el dispositivo, pendientes de sincronizar.</p>
-      <div id="queueList"></div>
-      <div class="status" id="fbStatus"></div>
-      <button class="btn" id="fbSync" onclick="sincronizar()" style="width:100%;margin-top:16px"></button>
-    </div>
-  </div>
-</div></section>
-
-<section class="blk" id="semanas"><div class="wrap">
-  <div class="sec-head">
-    <div><span class="idx">03 — <span data-es="HISTORIAL" data-en="HISTORY">HISTORIAL</span></span><h2 data-es="Semanas" data-en="Weeks">Semanas</h2></div>
-    <a class="btn" href="#datos" data-es="Ver todo" data-en="View all" style="text-decoration:none">Ver todo</a>
-  </div>
-  <div class="cards">
-    <button class="card" onclick="irSemana(0)"><div class="img" data-n="42"><span class="badge inv">Gastronomía</span></div><div class="body"><h3>Cansancio al final del recorrido</h3><span class="date">Semana 42</span><span class="go" data-es="Abrir" data-en="Open">Abrir</span></div></button>
-    <button class="card" onclick="irSemana(1)"><div class="img" data-n="43"><span class="badge inv">Idioma</span></div><div class="body"><h3>Barrera de idioma con el guía</h3><span class="date">Semana 43</span><span class="go" data-es="Abrir" data-en="Open">Abrir</span></div></button>
-    <button class="card" onclick="irSemana(2)"><div class="img" data-n="44"><span class="badge inv">Pagos</span></div><div class="body"><h3>Falta de pagos digitales</h3><span class="date">Semana 44</span><span class="go" data-es="Abrir" data-en="Open">Abrir</span></div></button>
-  </div>
-</div></section>
+</div>
 </main>
 
-<footer class="f" id="contacto"><div class="wrap">
+<footer class="f"><div class="wrap">
   <div class="fgrid">
     <div class="fbig">Noura</div>
-    <div><h4 data-es="Producto" data-en="Product">Producto</h4><a href="#datos" data-es="Análisis" data-en="Analysis">Análisis</a><a href="#semanas" data-es="Semanas" data-en="Weeks">Semanas</a></div>
-    <div><h4 data-es="Empresa" data-en="Company">Empresa</h4><a href="#contacto" data-es="Contacto" data-en="Contact">Contacto</a><a href="#contacto" data-es="Alianzas" data-en="Partners">Alianzas</a></div>
-    <div><h4 data-es="Legal" data-en="Legal">Legal</h4><a href="#contacto" data-es="Privacidad" data-en="Privacy">Privacidad</a><a href="#contacto" data-es="Tratamiento de datos" data-en="Data policy">Tratamiento de datos</a></div>
+    <div><h4>Producto</h4><a onclick="switchTab('tourist')">PWA Turista</a><a onclick="switchTab('operator')">Motor Operadora</a></div>
+    <div><h4>Empresa</h4><a>Contacto</a><a>Alianzas</a></div>
+    <div><h4>Legal</h4><a>Privacidad</a><a>Tratamiento de datos</a></div>
   </div>
-  <div class="legal"><span>© 2026 NOURA</span><span data-es="Procesamiento en el dispositivo · Demo" data-en="On-device processing · Demo">Procesamiento en el dispositivo · Demo</span></div>
+  <div class="legal"><span>© 2026 NOURA</span><span>Procesamiento en el dispositivo · Demo</span></div>
 </div></footer>
 
 <script>
-const T = (id,h,lang,good,goodEs,bad,badEs)=>({id,h,lang,good,goodEs,bad,badEs});
-const escenarios = [
- { semana:42,
-   t:[T(1,"10:02","EN","The traditional food was amazing.","La comida tradicional estuvo increíble.","The final hike is too tiring.","La caminata final es muy cansada."),
-      T(2,"11:15","FR","J'ai adoré la nourriture.","Me encantó la comida.","Trop chaud à la fin.","Demasiado calor al final."),
-      T(3,"13:20","ES","Rica comida, muy sabrosa.","Rica comida, muy sabrosa.","La caminata final es pesada.","La caminata final es pesada."),
-      T(4,"15:45","EN","Amazing food!","¡Comida increíble!"),
-      T(5,"16:30","DE","Sehr gutes Essen.","Comida muy buena.")],
-   sms:`[10:02 AM] SMS (EN): "Food was great, but the final hike was too tiring."<br>[11:15 AM] SMS (FR): "J'ai adoré le guide. Il fait trop chaud à la fin."<br>[03:20 PM] SMS (ES): "Rica comida, la caminata final es muy pesada."`,
-   est:{good:'Gastronomía tradicional',goodC:'5 menciones',bad:'Cansancio/Calor al final',badC:'3 menciones'},
-   smsR:{good:'Gastronomía tradicional',goodC:'3 menciones',bad:'Cansancio/Calor al final',badC:'4 menciones'},
-   pregunta:'¿Generar ideas para "Cansancio al final"?',
-   ideas:['Ofrecer "Kits de hidratación" extra antes de iniciar el ascenso.','Crear una pequeña parada de descanso sombreada a los 2 km.'] },
- { semana:43,
-   t:[T(1,"09:10","DE","Tolle Aussicht.","Grandes vistas.","Ich konnte den Guide nicht verstehen.","No pude entender al guía."),
-      T(2,"12:05","EN","Beautiful views!","¡Hermosas vistas!","Wish there was an English translation.","Ojalá hubiera una traducción al inglés."),
-      T(3,"14:30","ES","Me encantó el paisaje.","Me encantó el paisaje.","El guía solo habla español local.","El guía solo habla español local."),
-      T(4,"16:15","FR","Belles vues.","Hermosas vistas.","Le guide ne parle pas français.","El guía no habla francés."),
-      T(5,"17:00","EN",null,null,"Couldn't understand the history tour.","No pude entender el tour histórico.")],
-   sms:`[09:10 AM] SMS (DE): "Tolle Tour, aber ich konnte den Guide nicht verstehen."<br>[12:05 PM] SMS (EN): "Beautiful views! Wish there was an English translation."<br>[02:30 PM] SMS (ES): "Me encantó el paisaje y las fotos."`,
-   est:{good:'Paisajes y Vistas',goodC:'4 menciones',bad:'Barrera de idioma con el guía',badC:'5 menciones'},
-   smsR:{good:'Vistas y recorrido visual',goodC:'5 menciones',bad:'Barrera de idioma con el guía',badC:'3 menciones'},
-   pregunta:'¿Generar ideas para "Barrera de idioma"?',
-   ideas:['Imprimir folletos con códigos QR que lleven a la historia del lugar traducida.','Grabar un audio-guía básico en inglés para reproducir en paradas clave.'] },
- { semana:44,
-   t:[T(1,"11:00","EN","Loved the crafts.","Me encantaron las artesanías.","You don't take cards.","No aceptan tarjetas."),
-      T(2,"13:20","FR","Superbes produits locaux.","Excelentes productos locales.","Pas de paiement digital.","No hay pago digital."),
-      T(3,"15:15","ES","Buenas artesanías.","Buenas artesanías."),
-      T(4,"17:05","EN","Great artisan work.","Gran trabajo artesanal."),
-      T(5,"18:10","DE","Schöne handgemachte Dinge.","Cosas hechas a mano hermosas."),
-      T(6,"19:00","ES","Artesanías muy bonitas.","Artesanías muy bonitas.")],
-   sms:`[11:00 AM] SMS (EN): "Loved the crafts, but you don't take credit cards."<br>[01:20 PM] SMS (FR): "Superbes produits locaux. Dommage, pas de paiement digital."<br>[04:15 PM] SMS (ES): "Todo increíble, pero tuve que buscar un cajero lejos."`,
-   est:{good:'Calidad de artesanías locales',goodC:'6 menciones',bad:'Falta de pagos digitales',badC:'2 menciones'},
-   smsR:{good:'Calidad de artesanías locales',goodC:'6 menciones',bad:'Falta de pagos digitales/tarjeta',badC:'4 menciones'},
-   pregunta:'¿Generar ideas para "Falta de pagos digitales"?',
-   ideas:['Implementar un enlace de pago offline que puedan abonar al volver a su hotel.','Ofrecer productos en "pre-venta" online al momento de reservar el tour.'] }
-];
-
-let actual = 0, formato = 'est', traducido = false;
 const $ = id => document.getElementById(id);
 const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-function renderEst(data, conTrad){
-  return data.t.map(x=>{
-    let h = `<b>[${x.h}] Turista ${x.id} (${x.lang})</b><br>`;
-    if(x.good){ h += `<span class="tag-good">BIEN:</span> "${esc(x.good)}"<br>`;
-      if(conTrad&&x.goodEs) h += `<span class="tr">↳ [ES]: "${esc(x.goodEs)}"</span>`; }
-    if(x.bad){ h += `<span class="tag-bad">MAL:</span> "${esc(x.bad)}"<br>`;
-      if(conTrad&&x.badEs) h += `<span class="tr">↳ [ES]: "${esc(x.badEs)}"</span>`; }
-    return h + '<br>';
-  }).join('');
+// --- NAVEGACIÓN ---
+function switchTab(tab) {
+  const t = tab === 'tourist';
+  $('viewTourist').hidden = !t; $('viewOperator').hidden = t;
+  $('tab1').classList.toggle('on', t); $('tab2').classList.toggle('on', !t);
+  $('app').scrollIntoView({behavior:'smooth', block:'start'});
 }
-
-function pintarRaw(){
-  const d = escenarios[actual];
-  $('rawLabel').textContent = formato==='sms' ? 'Paquetes 2G/3G sincronizados:' : 'Paquetes offline estructurados:';
-  $('rawDataBox').innerHTML = formato==='sms' ? d.sms : renderEst(d, traducido);
-}
-
-function cargar(){
-  const d = escenarios[actual], r = formato==='sms' ? d.smsR : d.est;
-  traducido = false;
-  $('btnProcess').style.display='block';
-  $('terminalBox').style.display='none';
-  $('dashboardBox').style.display='none';
-  $('btnSug').style.display='block';
-  $('sugBox').style.display='none';
-  $('weekTitle').textContent = (idioma==='en'?'Week ':'Semana ') + d.semana;
-  $('goodText').textContent = r.good; $('goodCount').textContent = r.goodC;
-  $('badText').textContent = r.bad;   $('badCount').textContent = r.badC;
-  $('btnSug').textContent = d.pregunta;
-  $('sugBox').innerHTML = '<strong>Oportunidades de Innovación:</strong><br><br>' + d.ideas.map(i=>'• '+esc(i)).join('<br>');
-  pintarRaw();
-}
-
-function siguiente(){ actual = (actual+1) % escenarios.length; cargar(); }
-
-function setFormato(f){
-  formato = f;
-  $('fmtSms').classList.toggle('on', f==='sms');
-  $('fmtEst').classList.toggle('on', f==='est');
-  cargar();
-}
-
+function menu(o){ $('overlay').classList.toggle('open', o); document.body.style.overflow = o ? 'hidden' : ''; }
 function toggleTema(){
   const dark = document.documentElement.dataset.theme !== 'dark';
   document.documentElement.dataset.theme = dark ? 'dark' : 'light';
   $('themeBtn').textContent = dark ? '☀️ Modo claro' : '🌙 Modo oscuro';
 }
+document.addEventListener('keydown', e => { if(e.key === 'Escape') menu(false); });
 
-async function iniciarProcesamiento(){
-  $('btnProcess').style.display='none';
-  const t = $('terminalBox'); t.style.display='block';
-  t.innerHTML = 'Iniciando análisis local...<br>';
-  await sleep(800);
-  t.innerHTML += "> <span class='highlight'>Traduciendo</span> " + (formato==='sms' ? 'idiomas detectados' : 'campos estructurados') + ' a Español...<br>';
-  await sleep(600);
-  if(formato==='est'){ traducido = true; pintarRaw(); }
-  await sleep(1000);
-  t.innerHTML += formato==='sms'
-    ? "> Procesando <span class='highlight'>Clasificación de Intenciones</span>...<br>"
-    : "> Estructurando <span class='highlight'>Patrones de Retroalimentación</span>...<br>";
-  await sleep(800);
-  t.innerHTML += "> <span style='color:var(--good)'>Análisis completado.</span>";
-  await sleep(600);
-  t.style.display='none';
-  $('dashboardBox').style.display='block';
+// --- LÓGICA TURISTA ---
+const dict = {
+  es: { good: "¿Qué fue lo que más te gustó? (BIEN)", bad: "¿Qué mejorarías? (MAL)", btn: "Guardar Reseña", saved: "Guardado localmente. Sin conexión 📡", syncBtn: "Simular Conexión y Sincronizar" },
+  en: { good: "What did you like the most? (GOOD)", bad: "What would you improve? (BAD)", btn: "Save Feedback", saved: "Saved locally. No connection 📡", syncBtn: "Simulate Connect & Sync" },
+  fr: { good: "Qu'avez-vous le plus aimé ? (BIEN)", bad: "Que devrions-nous améliorer ? (MAL)", btn: "Enregistrer", saved: "Enregistré localement. Pas de connexion 📡", syncBtn: "Simuler la connexion" }
+};
+function changeLanguage() {
+  const d = dict[$('langSelector').value];
+  $('lblGood').innerText = d.good; $('lblBad').innerText = d.bad;
+  $('btnSubmit').innerText = d.btn; $('btnSync').innerText = d.syncBtn;
+}
+function saveDataOffline() {
+  if(!$('txtGood').value && !$('txtBad').value) return;
+  $('txtGood').value = ""; $('txtBad').value = "";
+  const s = $('statusMessage');
+  s.innerText = dict[$('langSelector').value].saved;
+  s.hidden = false; $('btnSync').hidden = false;
+}
+function syncData() {
+  $('statusMessage').hidden = true; $('btnSync').hidden = true;
+  switchTab('operator'); // cambia automáticamente a la vista de la operadora
 }
 
-function mostrarSugerencias(){ $('btnSug').style.display='none'; $('sugBox').style.display='block'; }
-function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+// --- LÓGICA OPERADORA (AI) ---
+const T = (h,l,g,gE,b,bE) => ({h,l,g,gE,b,bE});
+const escenarios = [
+  { semana: 42,
+    t: [T("10:02","EN","The traditional food was amazing.","La comida tradicional estuvo increíble.","The final hike is too tiring.","La caminata final es muy cansada."),
+        T("11:15","FR","J'ai adoré la nourriture.","Me encantó la comida.","Trop chaud à la fin.","Demasiado calor al final."),
+        T("13:20","ES","Rica comida.","Rica comida.","La caminata final es pesada.","La caminata final es pesada."),
+        T("15:45","EN","Amazing food!","¡Comida increíble!","The last part is exhausting.","La última parte es agotadora.")],
+    good:'Gastronomía tradicional', goodC:'4 menciones', bad:'Cansancio/Calor al final', badC:'4 menciones',
+    pregunta:'¿Generar ideas para "Cansancio al final"?',
+    sugerencias:'<strong>Oportunidades de Innovación:</strong><br><br>• Ofrecer "Kits de hidratación" extra antes de iniciar el ascenso.<br>• Crear una pequeña parada de descanso sombreada a los 2km.' },
+  { semana: 43,
+    t: [T("09:10","DE","Tolle Aussicht.","Grandes vistas.","Ich konnte den Guide nicht verstehen.","No pude entender al guía."),
+        T("12:05","EN","Beautiful views!","¡Hermosas vistas!","Wish there was an English translation.","Ojalá hubiera una traducción al inglés."),
+        T("14:30","ES","Me encantó el paisaje.","Me encantó el paisaje.","Faltó un poco de historia local.","Faltó un poco de historia local."),
+        T("16:15","FR","Belles vues.","Hermosas vistas.","Le guide ne parle pas français.","El guía no habla francés.")],
+    good:'Paisajes y Vistas', goodC:'4 menciones', bad:'Barrera de idioma', badC:'3 menciones',
+    pregunta:'¿Generar ideas para "Barrera de idioma"?',
+    sugerencias:'<strong>Oportunidades de Innovación:</strong><br><br>• Imprimir folletos con códigos QR que lleven a la historia del lugar traducida.<br>• Grabar un audio-guía básico en inglés para reproducir en paradas clave.' }
+];
+let escenarioActual = 0;
 
-let idioma='es';
-function setIdioma(l){idioma=l;document.documentElement.lang=l;
-  document.querySelectorAll('[data-es]').forEach(e=>{e.textContent=e.dataset[l]});
-  $('langBtn').innerHTML=l==='es'?'<b>ES</b> / EN':'ES / <b>EN</b>';cargar();}
-function menu(o){$('overlay').classList.toggle('open',o);document.body.style.overflow=o?'hidden':'';}
-function irSemana(i){actual=i;cargar();$('datos').scrollIntoView({behavior:'smooth'});}
-document.addEventListener('keydown',e=>{if(e.key==='Escape')menu(false)});
-(function(){const c=$('preCount'),p=$('pre');let n=0;
-  const t=setInterval(()=>{n=Math.min(100,n+Math.ceil(Math.random()*7));c.textContent=String(n).padStart(2,'0')+'%';
-    if(n>=100){clearInterval(t);setTimeout(()=>p.classList.add('hide'),300);}},50);})();
+function renderRaw(d, conTrad) {
+  return d.t.map((x,i) => `<b>[${x.h}] Turista ${i+1} (${x.l})</b><br>`
+    + `<span class="tag-good">BIEN:</span> "${esc(x.g)}"<br>` + (conTrad ? `<span class="tr">↳ [ES]: "${esc(x.gE)}"</span>` : '')
+    + `<span class="tag-bad">MAL:</span> "${esc(x.b)}"<br>` + (conTrad ? `<span class="tr">↳ [ES]: "${esc(x.bE)}"</span>` : '') + '<br>').join('');
+}
 
-/* ===== Captura offline ===== */
-const FL={
- EN:{g:'What did you like the most? (Good)',b:'What would you improve? (Bad)',ph:'Write here...',save:'Save Feedback',sync:'Simulate Connect & Sync',syncing:'Connecting...',idle:'No pending feedback.',saved:'Saved locally. No connection',empty:'Write at least one comment.',done:'Synced. Packets sent:'},
- ES:{g:'¿Qué fue lo que más te gustó? (Bien)',b:'¿Qué mejorarías? (Mal)',ph:'Escribe aquí...',save:'Guardar feedback',sync:'Simular conexión y sincronizar',syncing:'Conectando...',idle:'Sin feedback pendiente.',saved:'Guardado localmente. Sin conexión',empty:'Escribe al menos un comentario.',done:'Sincronizado. Paquetes enviados:'},
- FR:{g:"Qu'avez-vous le plus aimé ? (Bien)",b:"Que amélioreriez-vous ? (Mal)",ph:'Écrivez ici...',save:'Enregistrer',sync:'Simuler connexion et synchro',syncing:'Connexion...',idle:'Aucun avis en attente.',saved:'Enregistré localement. Pas de connexion',empty:'Écrivez au moins un commentaire.',done:'Synchronisé. Paquets envoyés :'},
- DE:{g:'Was hat Ihnen am besten gefallen? (Gut)',b:'Was würden Sie verbessern? (Schlecht)',ph:'Hier schreiben...',save:'Feedback speichern',sync:'Verbindung simulieren & sync',syncing:'Verbinde...',idle:'Kein Feedback ausstehend.',saved:'Lokal gespeichert. Keine Verbindung',empty:'Mindestens einen Kommentar schreiben.',done:'Synchronisiert. Pakete gesendet:'}
-};
-let cola=[],sinc=[],estado='idle';
-const ld=k=>{try{return JSON.parse(localStorage.getItem(k))||[]}catch(e){return[]}};
-const sv=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
-const FT=()=>FL[$('fbLang').value];
-function setStatus(txt,cls){const e=$('fbStatus');e.textContent=txt;e.className='status '+(cls||'');}
-function setFormLang(){const t=FT();
-  $('lblGood').textContent=t.g;$('lblBad').textContent=t.b;
-  $('fbGood').placeholder=t.ph;$('fbBad').placeholder=t.ph;
-  $('fbSave').textContent=t.save;$('fbSync').textContent=t.sync;
-  if(estado==='idle')setStatus(t.idle);else if(estado==='saved')setStatus(t.saved,'warn');}
-function renderCola(){
-  $('qCount').textContent=cola.length;
-  $('queueList').innerHTML=cola.map(c=>`<div class="q"><span class="badge">${c.l}</span><div>${c.g?`<span class="tag-good">+</span> ${esc(c.g)}`:''}${c.b?`<em><span class="tag-bad">−</span> ${esc(c.b)}</em>`:''}</div></div>`).join('')||'<div class="q"><em>—</em></div>';}
-function guardarFeedback(){
-  const g=$('fbGood').value.trim(),b=$('fbBad').value.trim(),t=FT();
-  if(!g&&!b){setStatus(t.empty,'warn');return;}
-  const d=new Date();
-  cola.push({l:$('fbLang').value,g,b,h:String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')});
-  sv('noura_cola',cola);$('fbGood').value='';$('fbBad').value='';
-  estado='saved';setStatus(t.saved,'warn');renderCola();}
-function topWord(arr){
-  const stop=new Set('that this with were very have there they para pero esto esta como avec pour mais dans nous nicht aber sehr sind'.split(' '));
-  const m={};arr.join(' ').toLowerCase().match(/\p{L}{4,}/gu)?.forEach(w=>{if(!stop.has(w))m[w]=(m[w]||0)+1});
-  return Object.entries(m).sort((a,b)=>b[1]-a[1])[0]?.[0]||null;}
-function construirVivo(){
-  if(!sinc.length)return;
-  const gs=sinc.filter(x=>x.g),bs=sinc.filter(x=>x.b);
-  const wg=topWord(gs.map(x=>x.g)),wb=topWord(bs.map(x=>x.b));
-  escenarios[3]={semana:45,
-    t:sinc.map((x,i)=>T(i+1,x.h,x.l,x.g||null,null,x.b||null,null)),
-    sms:sinc.map(x=>`[${x.h}] SMS (${x.l}): "${esc([x.g,x.b].filter(Boolean).join(' · '))}"`).join('<br>'),
-    est:{good:wg?'Tema: '+wg:'Sin aciertos',goodC:gs.length+' menciones',bad:wb?'Tema: '+wb:'Sin fricciones',badC:bs.length+' menciones'},
-    pregunta:wb?`¿Generar ideas para "${wb}"?`:'¿Generar ideas?',
-    ideas:wb?[`Revisar los mensajes que mencionan "${wb}" y priorizar el caso más repetido.`,'Responder a los turistas afectados cuando se recupere la conexión.']:['Sin fricciones detectadas: reforzar lo que ya funciona.']};
-  escenarios[3].smsR=escenarios[3].est;}
-async function sincronizar(){
-  const t=FT();
-  if(!cola.length){estado='idle';setStatus(t.idle);return;}
-  const b=$('fbSync');b.disabled=true;setStatus(t.syncing);
-  await sleep(1200);
-  const n=cola.length;sinc=sinc.concat(cola);cola=[];
-  sv('noura_cola',cola);sv('noura_sinc',sinc);
-  construirVivo();renderCola();estado='done';setStatus(t.done+' '+n,'ok');b.disabled=false;
-  actual=3;cargar();$('datos').scrollIntoView({behavior:'smooth'});}
-cola=ld('noura_cola');sinc=ld('noura_sinc');construirVivo();renderCola();setFormLang();
+function cargarEscenarioAleatorio() {
+  $('btnProcess').hidden = false; $('terminalBox').hidden = true; $('dashboardBox').hidden = true;
+  $('btnSugerencias').hidden = false; $('sugerenciasBox').hidden = true;
+  escenarioActual = (escenarioActual + 1) % escenarios.length;
+  const d = escenarios[escenarioActual];
+  $('weekTitle').innerText = "NOURA - Sem. " + d.semana;
+  $('rawDataBox').innerHTML = renderRaw(d, false);
+  $('goodText').innerText = d.good; $('goodCount').innerText = d.goodC;
+  $('badText').innerText = d.bad; $('badCount').innerText = d.badC;
+  $('btnSugerencias').innerText = d.pregunta;
+  $('sugerenciasBox').innerHTML = d.sugerencias;
+}
+
+async function iniciarProcesamiento() {
+  $('btnProcess').hidden = true;
+  const t = $('terminalBox'); t.hidden = false;
+  t.innerHTML = "Iniciando análisis local...<br>"; await sleep(600);
+  t.innerHTML += "> <span class='highlight'>Traduciendo</span> campos estructurados...<br>"; await sleep(500);
+  $('rawDataBox').innerHTML = renderRaw(escenarios[escenarioActual], true); await sleep(800);
+  t.innerHTML += "> Estructurando <span class='highlight'>Patrones de Retroalimentación</span>...<br>"; await sleep(600);
+  t.innerHTML += "> <span style='color:var(--good)'>Diagnóstico completado.</span>"; await sleep(500);
+  t.hidden = true; $('dashboardBox').hidden = false;
+}
+function mostrarSugerencias() { $('btnSugerencias').hidden = true; $('sugerenciasBox').hidden = false; }
+
+// Preloader numérico
+(function(){ const c = $('preCount'), p = $('pre'); let n = 0;
+  const t = setInterval(() => { n = Math.min(100, n + Math.ceil(Math.random()*7)); c.textContent = String(n).padStart(2,'0') + '%';
+    if(n >= 100){ clearInterval(t); setTimeout(() => p.classList.add('hide'), 300); } }, 50); })();
+
 document.documentElement.dataset.theme = 'dark';
-window.onload = cargar;
+window.onload = () => { escenarioActual = -1; cargarEscenarioAleatorio(); };
 </script>
 </body>
 </html>
