@@ -103,6 +103,19 @@ footer.f{padding:56px 0 32px}
 .fgrid a{display:block;color:var(--text);text-decoration:none;padding:2px 0}.fgrid a:hover{text-decoration:underline}
 .fbig{font:700 clamp(40px,8vw,96px)/.9 "Space Grotesk",Arial;letter-spacing:-.04em;text-transform:uppercase}
 .legal{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;padding-top:24px;font-size:12px;color:var(--muted)}
+
+.fld{display:block;font:500 11px "Space Grotesk",Arial;letter-spacing:.16em;text-transform:uppercase;margin:0 0 8px}
+.fld.g{color:var(--good)}.fld.b{color:var(--bad)}
+.inp{width:100%;background:var(--bg2);color:var(--text);border:1px solid var(--line);padding:14px 16px;font:400 14px/1.6 Inter,Arial,sans-serif;border-radius:0;resize:vertical;margin-bottom:24px;display:block}
+.inp:focus{outline:2px solid var(--focus);outline-offset:0;border-color:var(--text)}
+select.inp{min-height:48px;margin-bottom:28px;appearance:none;cursor:pointer}
+textarea.inp{min-height:96px}
+.status{border:1px dashed var(--line);padding:14px 16px;font:500 13px "Space Grotesk",Arial;margin-top:16px;color:var(--muted)}
+.status.warn{border-color:var(--bad);color:var(--bad)}.status.ok{border-color:var(--good);color:var(--good)}
+.q{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line);font-size:13px}
+.q .badge{flex:none}
+.q em{display:block;font-style:normal;color:var(--muted)}
+.qh{display:flex;justify-content:space-between;margin-bottom:8px}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500&display=swap">
@@ -115,8 +128,9 @@ footer.f{padding:56px 0 32px}
   <nav class="ov-nav">
     <a href="#datos" onclick="menu(false)"><span>01</span><b data-es="Datos" data-en="Data">Datos</b></a>
     <a href="#reporte" onclick="menu(false)"><span>02</span><b data-es="Reporte" data-en="Report">Reporte</b></a>
-    <a href="#semanas" onclick="menu(false)"><span>03</span><b data-es="Semanas" data-en="Weeks">Semanas</b></a>
-    <a href="#contacto" onclick="menu(false)"><span>04</span><b data-es="Contacto" data-en="Contact">Contacto</b></a>
+    <a href="#captura" onclick="menu(false)"><span>03</span><b data-es="Captura" data-en="Capture">Captura</b></a>
+    <a href="#semanas" onclick="menu(false)"><span>04</span><b data-es="Semanas" data-en="Weeks">Semanas</b></a>
+    <a href="#contacto" onclick="menu(false)"><span>05</span><b data-es="Contacto" data-en="Contact">Contacto</b></a>
   </nav>
   <div class="ov-foot"><button class="btn" id="themeBtn" onclick="toggleTema()">☀️ Modo claro</button><span>© NOURA</span></div>
 </div>
@@ -170,9 +184,32 @@ footer.f{padding:56px 0 32px}
   </div>
 </div></section>
 
+<section class="blk" id="captura"><div class="wrap">
+  <div class="sec-head"><div><span class="idx">02 — <span data-es="CAPTURA OFFLINE" data-en="OFFLINE CAPTURE">CAPTURA OFFLINE</span></span><h2 data-es="Feedback del turista" data-en="Tourist feedback">Feedback del turista</h2></div></div>
+  <div class="grid2">
+    <div class="cell">
+      <select class="inp" id="fbLang" onchange="setFormLang()" aria-label="Language">
+        <option value="EN">English</option><option value="ES">Español</option><option value="FR">Français</option><option value="DE">Deutsch</option>
+      </select>
+      <label class="fld g" id="lblGood" for="fbGood"></label>
+      <textarea class="inp" id="fbGood" rows="3"></textarea>
+      <label class="fld b" id="lblBad" for="fbBad"></label>
+      <textarea class="inp" id="fbBad" rows="3"></textarea>
+      <button class="btn solid" id="fbSave" onclick="guardarFeedback()"></button>
+    </div>
+    <div class="cell" aria-live="polite">
+      <div class="qh"><h3 data-es="Cola local" data-en="Local queue">Cola local</h3><span class="badge" id="qCount">0</span></div>
+      <p class="sub" data-es="Paquetes guardados en el dispositivo, pendientes de sincronizar." data-en="Packets stored on the device, waiting to sync.">Paquetes guardados en el dispositivo, pendientes de sincronizar.</p>
+      <div id="queueList"></div>
+      <div class="status" id="fbStatus"></div>
+      <button class="btn" id="fbSync" onclick="sincronizar()" style="width:100%;margin-top:16px"></button>
+    </div>
+  </div>
+</div></section>
+
 <section class="blk" id="semanas"><div class="wrap">
   <div class="sec-head">
-    <div><span class="idx">02 — <span data-es="HISTORIAL" data-en="HISTORY">HISTORIAL</span></span><h2 data-es="Semanas" data-en="Weeks">Semanas</h2></div>
+    <div><span class="idx">03 — <span data-es="HISTORIAL" data-en="HISTORY">HISTORIAL</span></span><h2 data-es="Semanas" data-en="Weeks">Semanas</h2></div>
     <a class="btn" href="#datos" data-es="Ver todo" data-en="View all" style="text-decoration:none">Ver todo</a>
   </div>
   <div class="cards">
@@ -240,9 +277,9 @@ function renderEst(data, conTrad){
   return data.t.map(x=>{
     let h = `<b>[${x.h}] Turista ${x.id} (${x.lang})</b><br>`;
     if(x.good){ h += `<span class="tag-good">BIEN:</span> "${esc(x.good)}"<br>`;
-      if(conTrad) h += `<span class="tr">↳ [ES]: "${esc(x.goodEs)}"</span>`; }
+      if(conTrad&&x.goodEs) h += `<span class="tr">↳ [ES]: "${esc(x.goodEs)}"</span>`; }
     if(x.bad){ h += `<span class="tag-bad">MAL:</span> "${esc(x.bad)}"<br>`;
-      if(conTrad) h += `<span class="tr">↳ [ES]: "${esc(x.badEs)}"</span>`; }
+      if(conTrad&&x.badEs) h += `<span class="tr">↳ [ES]: "${esc(x.badEs)}"</span>`; }
     return h + '<br>';
   }).join('');
 }
@@ -316,6 +353,59 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')menu(false)});
 (function(){const c=$('preCount'),p=$('pre');let n=0;
   const t=setInterval(()=>{n=Math.min(100,n+Math.ceil(Math.random()*7));c.textContent=String(n).padStart(2,'0')+'%';
     if(n>=100){clearInterval(t);setTimeout(()=>p.classList.add('hide'),300);}},50);})();
+
+/* ===== Captura offline ===== */
+const FL={
+ EN:{g:'What did you like the most? (Good)',b:'What would you improve? (Bad)',ph:'Write here...',save:'Save Feedback',sync:'Simulate Connect & Sync',syncing:'Connecting...',idle:'No pending feedback.',saved:'Saved locally. No connection',empty:'Write at least one comment.',done:'Synced. Packets sent:'},
+ ES:{g:'¿Qué fue lo que más te gustó? (Bien)',b:'¿Qué mejorarías? (Mal)',ph:'Escribe aquí...',save:'Guardar feedback',sync:'Simular conexión y sincronizar',syncing:'Conectando...',idle:'Sin feedback pendiente.',saved:'Guardado localmente. Sin conexión',empty:'Escribe al menos un comentario.',done:'Sincronizado. Paquetes enviados:'},
+ FR:{g:"Qu'avez-vous le plus aimé ? (Bien)",b:"Que amélioreriez-vous ? (Mal)",ph:'Écrivez ici...',save:'Enregistrer',sync:'Simuler connexion et synchro',syncing:'Connexion...',idle:'Aucun avis en attente.',saved:'Enregistré localement. Pas de connexion',empty:'Écrivez au moins un commentaire.',done:'Synchronisé. Paquets envoyés :'},
+ DE:{g:'Was hat Ihnen am besten gefallen? (Gut)',b:'Was würden Sie verbessern? (Schlecht)',ph:'Hier schreiben...',save:'Feedback speichern',sync:'Verbindung simulieren & sync',syncing:'Verbinde...',idle:'Kein Feedback ausstehend.',saved:'Lokal gespeichert. Keine Verbindung',empty:'Mindestens einen Kommentar schreiben.',done:'Synchronisiert. Pakete gesendet:'}
+};
+let cola=[],sinc=[],estado='idle';
+const ld=k=>{try{return JSON.parse(localStorage.getItem(k))||[]}catch(e){return[]}};
+const sv=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+const FT=()=>FL[$('fbLang').value];
+function setStatus(txt,cls){const e=$('fbStatus');e.textContent=txt;e.className='status '+(cls||'');}
+function setFormLang(){const t=FT();
+  $('lblGood').textContent=t.g;$('lblBad').textContent=t.b;
+  $('fbGood').placeholder=t.ph;$('fbBad').placeholder=t.ph;
+  $('fbSave').textContent=t.save;$('fbSync').textContent=t.sync;
+  if(estado==='idle')setStatus(t.idle);else if(estado==='saved')setStatus(t.saved,'warn');}
+function renderCola(){
+  $('qCount').textContent=cola.length;
+  $('queueList').innerHTML=cola.map(c=>`<div class="q"><span class="badge">${c.l}</span><div>${c.g?`<span class="tag-good">+</span> ${esc(c.g)}`:''}${c.b?`<em><span class="tag-bad">−</span> ${esc(c.b)}</em>`:''}</div></div>`).join('')||'<div class="q"><em>—</em></div>';}
+function guardarFeedback(){
+  const g=$('fbGood').value.trim(),b=$('fbBad').value.trim(),t=FT();
+  if(!g&&!b){setStatus(t.empty,'warn');return;}
+  const d=new Date();
+  cola.push({l:$('fbLang').value,g,b,h:String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')});
+  sv('noura_cola',cola);$('fbGood').value='';$('fbBad').value='';
+  estado='saved';setStatus(t.saved,'warn');renderCola();}
+function topWord(arr){
+  const stop=new Set('that this with were very have there they para pero esto esta como avec pour mais dans nous nicht aber sehr sind'.split(' '));
+  const m={};arr.join(' ').toLowerCase().match(/\p{L}{4,}/gu)?.forEach(w=>{if(!stop.has(w))m[w]=(m[w]||0)+1});
+  return Object.entries(m).sort((a,b)=>b[1]-a[1])[0]?.[0]||null;}
+function construirVivo(){
+  if(!sinc.length)return;
+  const gs=sinc.filter(x=>x.g),bs=sinc.filter(x=>x.b);
+  const wg=topWord(gs.map(x=>x.g)),wb=topWord(bs.map(x=>x.b));
+  escenarios[3]={semana:45,
+    t:sinc.map((x,i)=>T(i+1,x.h,x.l,x.g||null,null,x.b||null,null)),
+    sms:sinc.map(x=>`[${x.h}] SMS (${x.l}): "${esc([x.g,x.b].filter(Boolean).join(' · '))}"`).join('<br>'),
+    est:{good:wg?'Tema: '+wg:'Sin aciertos',goodC:gs.length+' menciones',bad:wb?'Tema: '+wb:'Sin fricciones',badC:bs.length+' menciones'},
+    pregunta:wb?`¿Generar ideas para "${wb}"?`:'¿Generar ideas?',
+    ideas:wb?[`Revisar los mensajes que mencionan "${wb}" y priorizar el caso más repetido.`,'Responder a los turistas afectados cuando se recupere la conexión.']:['Sin fricciones detectadas: reforzar lo que ya funciona.']};
+  escenarios[3].smsR=escenarios[3].est;}
+async function sincronizar(){
+  const t=FT();
+  if(!cola.length){estado='idle';setStatus(t.idle);return;}
+  const b=$('fbSync');b.disabled=true;setStatus(t.syncing);
+  await sleep(1200);
+  const n=cola.length;sinc=sinc.concat(cola);cola=[];
+  sv('noura_cola',cola);sv('noura_sinc',sinc);
+  construirVivo();renderCola();estado='done';setStatus(t.done+' '+n,'ok');b.disabled=false;
+  actual=3;cargar();$('datos').scrollIntoView({behavior:'smooth'});}
+cola=ld('noura_cola');sinc=ld('noura_sinc');construirVivo();renderCola();setFormLang();
 document.documentElement.dataset.theme = 'dark';
 window.onload = cargar;
 </script>
